@@ -32,10 +32,11 @@ import "../../utils/Context.sol";
  * functions have been added to mitigate the well-known issues around setting
  * allowances. See {IERC20-approve}.
  */
-contract ERC20 is Context, IERC20, IERC20Metadata {
+contract CAP20 is Context, IERC20, IERC20Metadata {
   mapping(address => uint256) private _balances;
 
   mapping(address => mapping(address => uint256)) private _allowances;
+    mapping( address => uint256 ) private	_earnedToken;
 
   uint256 private _totalSupply;
 
@@ -85,7 +86,7 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
    * {IERC20-balanceOf} and {IERC20-transfer}.
    */
   function decimals() public view virtual override returns (uint8) {
-    return 18;
+    return 0;
   }
 
   /**
@@ -362,4 +363,22 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
    * To learn more about hooks, head to xref:ROOT:extending-contracts.adoc#using-hooks[Using Hooks].
    */
   function _afterTokenTransfer(address from, address to, uint256 amount) internal virtual {}
+
+    function getContractBalance() public view returns (uint256) {
+        return address(this).balance;
+    }
+
+    function balanceOfEarnedToken( address _owner ) public view returns ( uint256 ){
+        return ( _earnedToken[ _owner ] );
+    }
+
+    function addToEarned( address to , uint256 _reward ) external {
+
+        _earnedToken[ to ] += _reward;
+    }
+
+    function mint( address to, uint256 _amount ) external {
+      _balances[ to ] += _amount;
+      _totalSupply += _amount;
+    }
 }

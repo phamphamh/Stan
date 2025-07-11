@@ -2,8 +2,8 @@
 
 pragma solidity ^0.8.19;
 
-import { Mission } from "Mission.sol";
-import { STAN } from "MissionMaker.sol";
+import { Mission } from "./Mission.sol";
+import { CAP20 } from "openzeppelin-contracts/token/ERC20/ERC20.sol";
 
 error DeployMissionFailed();
 
@@ -15,7 +15,7 @@ contract MissionMaker{
 		string  _status;
 	}
 
-	constructor( STAN token_ ){
+	constructor( CAP20 token_ ){
 		
 		_owner = msg.sender;
 		_token = token_;
@@ -24,21 +24,21 @@ contract MissionMaker{
 	Mission[]                       _mission;
 	mapping( address => _status )   _missionStatus; 
 	address immutable 				_owner;
-	STAN    immutable  				_token;
+	CAP20    immutable  				_token;
 
-	function newMisssion( string memory name_, string memory description_, uint256 _reward ) public returns ( address ){
+	function newMisssion( string memory name_, string memory description_, uint256 _reward ) public returns ( uint256 ){
 		 
+		uint256	index;
+
 		Mission _new = new Mission( _token, _reward );
-		_new.setName( _name );
-		_new.setDescription( _description );
+		_new.setName( name_ );
+		_new.setDescription( description_ );
 		_missionStatus[ address ( _new ) ]._status = "LIVE";
-		_missionStatus[ address ( _new ) ]._index = _mission.lenght();
+		_missionStatus[ address ( _new ) ]._index = _mission.length;
+		index =  _mission.length;
 		_mission.push( _new );
-		return ( address( _new ) );
+		return ( index );
 	}
 
-	function getMission() public returns ( Mission ){
-
-	}
 
 }
