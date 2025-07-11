@@ -32,9 +32,11 @@ contract Mission {
 
 
 	/* REGISTER && UNREGISTER */
-	
+
 	function registerFan( address fan_ ) public {
 
+		if ( _fan == address(0))
+			revert ;
 		if ( _fanStatus[ _fan ]._status != "COMPLETED" )
 			revert AlreadyRegister();
 		_fanIndex[ fan_ ] = _fan.lenght();
@@ -81,7 +83,13 @@ contract Mission {
 		return ( _earnedToken[ fan_ ] );
 	}
 
-		function getMissionStatus ( address fan_ ) public view returns ( string memory ){
+	function getMissionStatus ( address fan_ ) public view returns ( string memory ){
+
 		return ( _fanStatus[ fan_ ]._status );
+	}
+
+	function getReward () public view returns ( uint256 ){
+
+		return ( _reward );
 	}
 }

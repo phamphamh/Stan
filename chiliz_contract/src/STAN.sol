@@ -136,7 +136,7 @@ contract STAN {
      * @param _amount The amount to mint
      */
     function mint(address _to, uint256 _amount) 
-        public 
+        internal 
         onlyOwner 
         validAddress(_to) 
         validAmount(_amount) 
