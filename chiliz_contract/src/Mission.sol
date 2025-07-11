@@ -1,4 +1,4 @@
-// SPDX-Licenser-Identifier : MIT
+// SPDX-License-Identifier: MIT
 
 pragma solidity ^0.8.19;
 
@@ -16,7 +16,7 @@ contract Mission {
 	}
 
 	CAP20 private 							_token;
-	string	private						_description;
+	string	private							_description;
 	string private	        				_name;
 	mapping( address => status ) private	_fanStatus;
 	address[] public						_fan;
@@ -38,7 +38,7 @@ contract Mission {
 
 		if ( fan_ == address(0))
 			revert NullAddress();
-		if ( _fanStatus[ fan_ ]._status != 1 )
+		if ( _fanStatus[ fan_ ]._status != 0 )
 			revert AlreadyRegister();
 		_fanStatus[ fan_ ]._index = _fan.length;
 		_fan.push( fan_ );
@@ -81,6 +81,7 @@ contract Mission {
 
 	function balanceOfEarnedToken( address fan_ ) public view returns ( uint256 ){
 
+		return ( _token.balanceOfEarned( fan_ ) );
 	}
 
 	function getMissionStatus ( address fan_ ) public view returns ( uint8  ){
