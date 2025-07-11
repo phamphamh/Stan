@@ -79,9 +79,9 @@ contract Mission {
 		return ( _name );
 	}
 
-	function balanceOfEarnedToken( address fan_ ) public view returns ( uint256 ){
+	function _balanceOfEarnedToken( address fan_ ) public view returns ( uint256 ){
 
-		return ( _token.balanceOfEarned( fan_ ) );
+		return ( _token.balanceOfEarnedToken( fan_ ) );
 	}
 
 	function getMissionStatus ( address fan_ ) public view returns ( uint8  ){
