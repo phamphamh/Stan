@@ -49,7 +49,7 @@ const getUserData = (userId: string, tokens: number, level: number, earnedBadges
     },
   }
 
-  return users[userId] || users["1"] // Default to first user if not found
+  return users[userId as keyof typeof users] || users["1"] // Default to first user if not found
 }
 
 export default function UserProfile({ userId }: UserProfileProps) {

@@ -83,13 +83,13 @@ const unavailableRewards = [
 
 export default function RewardsGrid() {
   const { tokens, addTokens, addTransaction } = useTokens()
-  const [selectedReward, setSelectedReward] = useState(null)
+  const [selectedReward, setSelectedReward] = useState<any>(null)
   const [isProcessing, setIsProcessing] = useState(false)
   const [showResult, setShowResult] = useState(false)
   const [showEmailModal, setShowEmailModal] = useState(false)
   const [claimedRewards, setClaimedRewards] = useState(new Set())
 
-  const handleRedeem = (reward) => {
+  const handleRedeem = (reward: any) => {
     if (reward.type === "instant" && reward.cost <= tokens) {
       setSelectedReward(reward)
       setIsProcessing(true)
@@ -112,8 +112,8 @@ export default function RewardsGrid() {
     }
   }
 
-  const handleEmailSubmit = (email) => {
-    setClaimedRewards(prev => new Set([...prev, selectedReward.id]))
+  const handleEmailSubmit = (email: string) => {
+    setClaimedRewards(prev => new Set([...prev, selectedReward?.id]))
     setShowEmailModal(false)
     setShowResult(true)
   }
@@ -125,11 +125,11 @@ export default function RewardsGrid() {
     setSelectedReward(null)
   }
 
-  const isRewardClaimed = (reward) => {
+  const isRewardClaimed = (reward: any) => {
     return claimedRewards.has(reward.id)
   }
 
-  const RewardCard = ({ reward, isAvailable = true }) => {
+  const RewardCard = ({ reward, isAvailable = true }: { reward: any, isAvailable?: boolean }) => {
     const isClaimed = isRewardClaimed(reward)
     const canAfford = tokens >= reward.cost
     const isClickable = isAvailable && !isClaimed && canAfford

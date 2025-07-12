@@ -6,12 +6,13 @@ import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
 
 interface ProfilePageProps {
-  params: {
+  params: Promise<{
     userId: string
-  }
+  }>
 }
 
-export default function ProfilePage({ params }: ProfilePageProps) {
+export default async function ProfilePage({ params }: ProfilePageProps) {
+  const { userId } = await params
   return (
     <AppShell topNav={<TopNav />} bottomNav={<BottomNav activeTab="Home" />}>
       <div className="flex-1 overflow-y-auto overflow-x-hidden">
@@ -24,7 +25,7 @@ export default function ProfilePage({ params }: ProfilePageProps) {
         </div>
 
         <div className="p-4">
-          <UserProfile userId={params.userId} />
+          <UserProfile userId={userId} />
           <div className="h-16" />
         </div>
       </div>

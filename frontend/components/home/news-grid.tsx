@@ -1,6 +1,5 @@
 "use client"
 
-import { config } from "@/lib/config"
 import Image from "next/image"
 import { Play, Heart, MessageCircle, Share, MoreHorizontal } from "lucide-react"
 import { motion } from "framer-motion"
@@ -25,6 +24,7 @@ const blackpinkNews = [
     username: "officialbp",
     userAvatar: mockAvatars[0],
     timestamp: "2 hours ago",
+    duration: "1:30",
   },
   {
     id: "2",
@@ -37,6 +37,7 @@ const blackpinkNews = [
     username: "officialbp",
     userAvatar: mockAvatars[1],
     timestamp: "1 day ago",
+    duration: "2:15",
   },
   {
     id: "3",
@@ -49,6 +50,7 @@ const blackpinkNews = [
     username: "officialbp",
     userAvatar: mockAvatars[2],
     timestamp: "3 days ago",
+    duration: "0:45",
   },
   {
     id: "4",
@@ -61,6 +63,7 @@ const blackpinkNews = [
     username: "officialbp",
     userAvatar: mockAvatars[3],
     timestamp: "5 days ago",
+    duration: "1:20",
   },
 ]
 
