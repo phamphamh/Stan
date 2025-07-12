@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { Poppins } from "next/font/google"
 import "./globals.css"
 import { cn } from "@/lib/utils"
+import { Web3Provider } from "@/components/providers/web3-provider"
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -30,7 +31,9 @@ export default function RootLayout({
           poppins.className,
         )}
       >
-        {children}
+        <Web3Provider>
+          {children}
+        </Web3Provider>
       </body>
     </html>
   )
