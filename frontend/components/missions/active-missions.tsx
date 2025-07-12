@@ -6,6 +6,9 @@ import { Button } from "@/components/ui/button"
 import { config } from "@/lib/config"
 import { motion, AnimatePresence } from "framer-motion"
 import { useTokens } from "@/lib/tokens-context"
+import { useCompleteMission } from "@/lib/contracts/artist"
+import { MISSION_MAPPING } from "@/lib/constants"
+import { useAccount } from "wagmi"
 import ProofUploadModal from "@/components/modals/proof-upload-modal"
 import BadgeEarnedModal from "@/components/modals/badge-earned-modal"
 
@@ -55,6 +58,8 @@ const photocardMission = {
 
 export default function ActiveMissions() {
   const { tokens, completeMission, missions } = useTokens()
+  const { completeMission: completeMissionBlockchain, isLoading: isCompleting } = useCompleteMission()
+  const { isConnected } = useAccount()
   const [uploadModalOpen, setUploadModalOpen] = useState(false)
   const [selectedMission, setSelectedMission] = useState<string | null>(null)
   const [badgeModalOpen, setBadgeModalOpen] = useState(false)
@@ -70,18 +75,25 @@ export default function ActiveMissions() {
   }
 
   const completeMissionDirect = async (missionId: string) => {
-    const result = await completeMission(missionId)
+    // Si connecté à la blockchain, utiliser le smart contract
+    if (isConnected && missionId in MISSION_MAPPING) {
+      const blockchainId = MISSION_MAPPING[missionId as keyof typeof MISSION_MAPPING]
+      completeMissionBlockchain(blockchainId)
+    } else {
+      // Sinon, utiliser l'ancien système de tokens mocké
+      const result = await completeMission(missionId)
 
-    if (result.newBadge) {
-      setEarnedBadge(result.newBadge)
-      setBadgeModalOpen(true)
-    }
+      if (result.newBadge) {
+        setEarnedBadge(result.newBadge)
+        setBadgeModalOpen(true)
+      }
 
-    if (result.levelUp) {
-      // Show level up notification
-      setTimeout(() => {
-        alert("🎉 Level Up! You reached a new level!")
-      }, 1000)
+      if (result.levelUp) {
+        // Show level up notification
+        setTimeout(() => {
+          alert("🎉 Level Up! You reached a new level!")
+        }, 1000)
+      }
     }
   }
 

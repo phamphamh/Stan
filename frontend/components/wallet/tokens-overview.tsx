@@ -1,12 +1,20 @@
 "use client"
 
-import { TrendingUp, Play, Gift, ShoppingCart } from "lucide-react"
+import { TrendingUp, Play, Gift, ShoppingCart, RefreshCw } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { config } from "@/lib/config"
 import { useTokens } from "@/lib/tokens-context"
+import { useTokenBalance } from "@/lib/contracts/artist"
+import { useAccount } from "wagmi"
 
 export default function TokensOverview() {
   const { tokens, transactions } = useTokens()
+  const { balance, earnedBalance, refetchAll } = useTokenBalance()
+  const { isConnected: wagmiConnected } = useAccount()
+
+  // Utiliser les vrais tokens de la blockchain si connecté
+  const displayTokens = wagmiConnected ? parseFloat(balance || '0') : tokens
+  const displayEarnedTokens = wagmiConnected ? parseFloat(earnedBalance || '0') : 0
 
   const getTransactionIcon = (type: string) => {
     switch (type) {
@@ -36,13 +44,37 @@ export default function TokensOverview() {
       {/* Balance principale */}
       <div className="text-center">
         <div className="mb-2">
-          <span className="text-4xl font-bold text-white">{tokens}</span>
+          <span className="text-4xl font-bold text-white">{displayTokens.toFixed(0)}</span>
           <span className="ml-2 text-lg text-gray-400">TOKENS</span>
         </div>
+        
+        {wagmiConnected && displayEarnedTokens > 0 && (
+          <div className="mb-2">
+            <span className="text-2xl font-bold text-yellow-400">{displayEarnedTokens.toFixed(0)}</span>
+            <span className="ml-2 text-sm text-gray-400">EARNED TOKENS</span>
+          </div>
+        )}
+        
         <div className="flex items-center justify-center gap-2 text-sm text-gray-400">
           <TrendingUp className="h-4 w-4" />
           <span>BLACKPINK Fan Tokens</span>
+          {wagmiConnected && (
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={refetchAll}
+              className="ml-2 h-6 w-6 p-0 text-gray-400 hover:text-white"
+            >
+              <RefreshCw className="h-3 w-3" />
+            </Button>
+          )}
         </div>
+        
+        {wagmiConnected && (
+          <div className="mt-2 text-xs text-green-400">
+            ✓ Connecté à la blockchain Chiliz
+          </div>
+        )}
       </div>
 
       {/* Transactions récentes */}
