@@ -8,7 +8,11 @@ import {CAP20} from "openzeppelin-contracts/token/ERC20/ERC20.sol";
 import { Artist } from "../src/Artist.sol";
 import { ArtistFactory } from "../src/ArtistFactory.sol";
 
+<<<<<<< Updated upstream
 contract TestArtistAndFactory is Test {
+=======
+contract TestMissionMaker is Test {
+>>>>>>> Stashed changes
     ArtistFactory factory;
     
     // Artists
@@ -457,6 +461,7 @@ contract TestArtistAndFactory is Test {
     // ==================== MULTI-ARTIST AND MULTI-FAN SCENARIOS ====================
     
     function test_MultiArtistMultiFan_CompleteWorkflow() public {
+<<<<<<< Updated upstream
         createMissions();
         createRewards();
         
@@ -467,10 +472,38 @@ contract TestArtistAndFactory is Test {
         artistContract1.registerFanOnMission(0, fan2);
         vm.prank(fan3);
         artistContract1.registerFanOnMission(1, fan3);
+=======
+        console.log("=== TEST: MultiArtist MultiFan Complete Workflow ===");
+        createMissions();
+        createRewards();
+        
+        console.log("Setting up multi-artist, multi-fan scenario:");
+        console.log("Artist1:", artist1, "Token:", address(fanToken1));
+        console.log("Artist2:", artist2, "Token:", address(fanToken2));
+        console.log("Fan1:", fan1);
+        console.log("Fan2:", fan2);
+        console.log("Fan3:", fan3);
+        console.log("Fan4:", fan4);
+        
+        // Multiple fans register for Artist1's missions
+        console.log("\n--- Fan Registration Phase ---");
+        vm.prank(fan1);
+        artistContract1.registerFanOnMission(0, fan1);
+        console.log("Fan1 registered for Artist1 Mission 0 (Dance Challenge)");
+        
+        vm.prank(fan2);
+        artistContract1.registerFanOnMission(0, fan2);
+        console.log("Fan2 registered for Artist1 Mission 0 (Dance Challenge)");
+        
+        vm.prank(fan3);
+        artistContract1.registerFanOnMission(1, fan3);
+        console.log("Fan3 registered for Artist1 Mission 1 (Share Story)");
+>>>>>>> Stashed changes
         
         // Multiple fans register for Artist2's missions
         vm.prank(fan1);
         artistContract2.registerFanOnMission(0, fan1);
+<<<<<<< Updated upstream
         vm.prank(fan4);
         artistContract2.registerFanOnMission(1, fan4);
         
@@ -483,12 +516,50 @@ contract TestArtistAndFactory is Test {
         artistContract2.completeFanMission(0, fan1);
         
         // Verify token balances
+=======
+        console.log("Fan1 registered for Artist2 Mission 0 (Music Quiz)");
+        
+        vm.prank(fan4);
+        artistContract2.registerFanOnMission(1, fan4);
+        console.log("Fan4 registered for Artist2 Mission 1 (Cover Song)");
+        
+        // Fans complete missions
+        console.log("\n--- Mission Completion Phase ---");
+        vm.prank(fan1);
+        artistContract1.completeFanMission(0, fan1);
+        console.log("Fan1 completed Artist1 Mission 0 (+100 tokens)");
+        
+        vm.prank(fan2);
+        artistContract1.completeFanMission(0, fan2);
+        console.log("Fan2 completed Artist1 Mission 0 (+100 tokens)");
+        
+        vm.prank(fan1);
+        artistContract2.completeFanMission(0, fan1);
+        console.log("Fan1 completed Artist2 Mission 0 (+80 tokens)");
+        
+        console.log("Fan3 registered but did not complete mission");
+        console.log("Fan4 registered but did not complete mission");
+        
+        // Verify token balances
+        console.log("\n--- Token Balance Verification ---");
+        uint256 fan1Token1 = fanToken1.balanceOf(fan1);
+        uint256 fan2Token1 = fanToken1.balanceOf(fan2);
+        uint256 fan1Token2 = fanToken2.balanceOf(fan1);
+        uint256 fan3Token1 = fanToken1.balanceOf(fan3);
+        
+        console.log("Fan1 Artist1 token balance:", fan1Token1);
+        console.log("Fan2 Artist1 token balance:", fan2Token1);
+        console.log("Fan1 Artist2 token balance:", fan1Token2);
+        console.log("Fan3 Artist1 token balance:", fan3Token1);
+        
+>>>>>>> Stashed changes
         assertEq(fanToken1.balanceOf(fan1), 100);
         assertEq(fanToken1.balanceOf(fan2), 100);
         assertEq(fanToken2.balanceOf(fan1), 80);
         assertEq(fanToken1.balanceOf(fan3), 0); // Didn't complete
         
         // Verify earned token tracking
+<<<<<<< Updated upstream
         assertEq(fanToken1.balanceOfEarnedToken(fan1), 100);
         assertEq(fanToken1.balanceOfEarnedToken(fan2), 100);
         assertEq(fanToken2.balanceOfEarnedToken(fan1), 80);
@@ -499,22 +570,73 @@ contract TestArtistAndFactory is Test {
         createRewards();
         
         // Fan1 earns tokens from Artist1
+=======
+        console.log("\n--- Earned Token Verification ---");
+        uint256 fan1Earned1 = fanToken1.balanceOfEarnedToken(fan1);
+        uint256 fan2Earned1 = fanToken1.balanceOfEarnedToken(fan2);
+        uint256 fan1Earned2 = fanToken2.balanceOfEarnedToken(fan1);
+        
+        console.log("Fan1 earned from Artist1:", fan1Earned1);
+        console.log("Fan2 earned from Artist1:", fan2Earned1);
+        console.log("Fan1 earned from Artist2:", fan1Earned2);
+        
+        assertEq(fanToken1.balanceOfEarnedToken(fan1), 100);
+        assertEq(fanToken1.balanceOfEarnedToken(fan2), 100);
+        assertEq(fanToken2.balanceOfEarnedToken(fan1), 80);
+        
+        console.log("[PASS] Test passed: Multi-artist multi-fan workflow completed successfully");
+    }
+    
+    function test_CrossArtistInteractions() public {
+        console.log("=== TEST: Cross Artist Interactions ===");
+        createMissions();
+        createRewards();
+        
+        console.log("Testing token isolation between different artists");
+        console.log("Fan1 address:", fan1);
+        
+        // Fan1 earns tokens from Artist1
+        console.log("\n--- Artist1 Token Earning ---");
+>>>>>>> Stashed changes
         vm.prank(fan1);
         artistContract1.registerFanOnMission(0, fan1);
         vm.prank(fan1);
         artistContract1.completeFanMission(0, fan1);
+<<<<<<< Updated upstream
         
         // Fan1 earns tokens from Artist2
+=======
+        console.log("Fan1 completed Artist1 mission (Dance Challenge +100 tokens)");
+        
+        // Fan1 earns tokens from Artist2
+        console.log("\n--- Artist2 Token Earning ---");
+>>>>>>> Stashed changes
         vm.prank(fan1);
         artistContract2.registerFanOnMission(0, fan1);
         vm.prank(fan1);
         artistContract2.completeFanMission(0, fan1);
+<<<<<<< Updated upstream
         
         // Verify separate token balances
+=======
+        console.log("Fan1 completed Artist2 mission (Music Quiz +80 tokens)");
+        
+        // Verify separate token balances
+        console.log("\n--- Token Balance Verification ---");
+        uint256 fan1Artist1Balance = fanToken1.balanceOf(fan1);
+        uint256 fan1Artist2Balance = fanToken2.balanceOf(fan1);
+        
+        console.log("Fan1 Artist1 token balance:", fan1Artist1Balance);
+        console.log("Fan1 Artist2 token balance:", fan1Artist2Balance);
+        console.log("Artist2 Concert Ticket reward price: 180 tokens");
+        console.log("Fan1 has only 80 Artist2 tokens, cannot afford 180 token reward");
+        
+>>>>>>> Stashed changes
         assertEq(fanToken1.balanceOf(fan1), 100);
         assertEq(fanToken2.balanceOf(fan1), 80);
         
         // Fan1 cannot use Artist1 tokens for Artist2 rewards
+<<<<<<< Updated upstream
         vm.prank(fan1);
         vm.expectRevert("You don't have enough fan token");
         artistContract2.claimRewardFan(0, fan1); // Concert ticket costs 180, fan1 only has 80 in Artist2
@@ -525,18 +647,53 @@ contract TestArtistAndFactory is Test {
         createRewards();
         
         // Fan earns enough tokens
+=======
+        console.log("\n--- Cross-Artist Token Usage Test ---");
+        console.log("Testing: Fan1 trying to claim Artist2 reward with insufficient Artist2 tokens");
+        vm.prank(fan1);
+        vm.expectRevert("You don't have enough fan token");
+        artistContract2.claimRewardFan(0, fan1); // Concert ticket costs 180, fan1 only has 80 in Artist2
+        
+        console.log("[PASS] Test passed: Token isolation working correctly - cannot use Artist1 tokens for Artist2 rewards");
+    }
+    
+    function test_MultipleRewardClaims() public {
+        console.log("=== TEST: Multiple Reward Claims ===");
+        createMissions();
+        createRewards();
+        
+        console.log("Testing sequential reward claims by same fan");
+        console.log("Available rewards:");
+        console.log("  Reward 0: VIP Pass (150 tokens)");
+        console.log("  Reward 1: Signed Photo (75 tokens)");
+        console.log("  Reward 2: Video Call (200 tokens)");
+        
+        // Fan earns enough tokens
+        console.log("\n--- Token Earning Phase ---");
+>>>>>>> Stashed changes
         vm.prank(fan1);
         artistContract1.registerFanOnMission(0, fan1);
         vm.prank(fan1);
         artistContract1.completeFanMission(0, fan1);
+<<<<<<< Updated upstream
+=======
+        console.log("Fan1 completed mission 0 (+100 tokens)");
+        
+>>>>>>> Stashed changes
         vm.prank(fan1);
         artistContract1.registerFanOnMission(1, fan1);
         vm.prank(fan1);
         artistContract1.completeFanMission(1, fan1);
+<<<<<<< Updated upstream
+=======
+        console.log("Fan1 completed mission 1 (+50 tokens)");
+        
+>>>>>>> Stashed changes
         vm.prank(fan1);
         artistContract1.registerFanOnMission(2, fan1);
         vm.prank(fan1);
         artistContract1.completeFanMission(2, fan1);
+<<<<<<< Updated upstream
         
         uint256 totalEarned = fanToken1.balanceOfEarnedToken(fan1); // 100 + 50 + 75 = 225
         assertEq(totalEarned, 225);
@@ -557,38 +714,124 @@ contract TestArtistAndFactory is Test {
         createMissions();
         createRewards();
         
+=======
+        console.log("Fan1 completed mission 2 (+75 tokens)");
+        
+        uint256 totalEarned = fanToken1.balanceOfEarnedToken(fan1); // 100 + 50 + 75 = 225
+        uint256 currentBalance = fanToken1.balanceOf(fan1);
+        console.log("\nFan1 total earned tokens:", totalEarned);
+        console.log("Fan1 current balance:", currentBalance);
+        
+        assertEq(totalEarned, 225);
+        
+        // Claim multiple rewards
+        console.log("\n--- Multiple Reward Claims ---");
+        
+        console.log("Claiming Signed Photo (75 tokens)...");
+        vm.prank(fan1);
+        artistContract1.claimRewardFan(1, fan1); // Signed Photo costs 75
+        
+        uint256 balanceAfterFirst = fanToken1.balanceOf(fan1);
+        uint256 status1 = artistContract1.getStatuFanOnReward(1, fan1);
+        console.log("After first claim - Balance:", balanceAfterFirst);
+        console.log("Signed Photo status:", status1);
+        
+        console.log("\nClaiming VIP Pass (150 tokens)...");
+        vm.prank(fan1);
+        artistContract1.claimRewardFan(0, fan1); // VIP Pass costs 150
+        
+        uint256 balanceAfterSecond = fanToken1.balanceOf(fan1);
+        uint256 status0 = artistContract1.getStatuFanOnReward(0, fan1);
+        console.log("After second claim - Balance:", balanceAfterSecond);
+        console.log("VIP Pass status:", status0);
+        
+        // Verify both rewards are claimed
+        assertEq(artistContract1.getStatuFanOnReward(0, fan1), 2);
+        assertEq(artistContract1.getStatuFanOnReward(1, fan1), 2);
+        
+        console.log("\n--- Final Status ---");
+        console.log("Both rewards successfully claimed");
+        console.log("VIP Pass status:", artistContract1.getStatuFanOnReward(0, fan1));
+        console.log("Signed Photo status:", artistContract1.getStatuFanOnReward(1, fan1));
+        console.log("Video Call status (unclaimed):", artistContract1.getStatuFanOnReward(2, fan1));
+        
+        console.log("[PASS] Test passed: Multiple reward claims working correctly");
+    }
+    
+    function test_ArtistEarningsFromRewards() public {
+        console.log("=== TEST: Artist Earnings From Rewards ===");
+        createMissions();
+        createRewards();
+        
+        console.log("Testing artist revenue from multiple fan reward purchases");
+        console.log("VIP Pass price: 150 tokens");
+        console.log("Token economics: 40% burned, 60% to artist");
+        console.log("Expected artist earning per purchase: 150 * 100 / 60 = 250 tokens");
+        
+>>>>>>> Stashed changes
         // Multiple fans earn and spend tokens
         address[] memory fans = new address[](3);
         fans[0] = fan1;
         fans[1] = fan2;
         fans[2] = fan3;
         
+<<<<<<< Updated upstream
         for (uint i = 0; i < fans.length; i++) {
+=======
+        console.log("\n--- Fan Token Earning Phase ---");
+        for (uint i = 0; i < fans.length; i++) {
+            console.log("Fan", i+1, "earning tokens:", fans[i]);
+            
+>>>>>>> Stashed changes
             // Each fan completes multiple missions
             vm.prank(fans[i]);
             artistContract1.registerFanOnMission(0, fans[i]);
             vm.prank(fans[i]);
             artistContract1.completeFanMission(0, fans[i]);
+<<<<<<< Updated upstream
+=======
+            console.log("  Completed mission 0 (+100 tokens)");
+>>>>>>> Stashed changes
             
             vm.prank(fans[i]);
             artistContract1.registerFanOnMission(1, fans[i]);
             vm.prank(fans[i]);
             artistContract1.completeFanMission(1, fans[i]);
+<<<<<<< Updated upstream
+=======
+            console.log("  Completed mission 1 (+50 tokens)");
+>>>>>>> Stashed changes
             
             vm.prank(fans[i]);
             artistContract1.registerFanOnMission(2, fans[i]);
             vm.prank(fans[i]);
             artistContract1.completeFanMission(2, fans[i]);
+<<<<<<< Updated upstream
         }
         
         uint256 initialArtistBalance = fanToken1.balanceOf(artist1);
         
         // Fans claim rewards
         for (uint i = 0; i < fans.length; i++) {
+=======
+            console.log("  Completed mission 2 (+75 tokens)");
+            console.log("  Total earned: 225 tokens");
+        }
+        
+        uint256 initialArtistBalance = fanToken1.balanceOf(artist1);
+        console.log("\n--- Before Reward Claims ---");
+        console.log("Artist1 initial balance:", initialArtistBalance);
+        
+        // Fans claim rewards
+        console.log("\n--- Reward Claiming Phase ---");
+        for (uint i = 0; i < fans.length; i++) {
+            console.log("Fan", i+1, "claiming VIP Pass reward");
+>>>>>>> Stashed changes
             vm.prank(fans[i]);
             artistContract1.claimRewardFan(0, fans[i]); // VIP Pass costs 150
         }
         
+<<<<<<< Updated upstream
         // Artist should receive 60% of each purchase: 150 * 100 / 60 = 250 per fan
         uint256 expectedEarnings = 250 * 3;
         assertEq(fanToken1.balanceOf(artist1), initialArtistBalance + expectedEarnings);
@@ -599,10 +842,40 @@ contract TestArtistAndFactory is Test {
         
         // Check initial statuses
         for (uint i = 0; i < 4; i++) {
+=======
+        uint256 finalArtistBalance = fanToken1.balanceOf(artist1);
+        console.log("\n--- After All Claims ---");
+        console.log("Artist1 final balance:", finalArtistBalance);
+        console.log("Artist1 earnings:", finalArtistBalance - initialArtistBalance);
+        
+        // Artist should receive 60% of each purchase: 150 * 100 / 60 = 250 per fan
+        uint256 expectedEarnings = 250 * 3;
+        console.log("Expected total earnings:", expectedEarnings);
+        console.log("Actual total earnings:", finalArtistBalance - initialArtistBalance);
+        
+        assertEq(fanToken1.balanceOf(artist1), initialArtistBalance + expectedEarnings);
+        
+        console.log("[PASS] Test passed: Artist receives correct revenue share from reward purchases");
+    }
+    
+    function test_MissionStatusTracking() public {
+        console.log("=== TEST: Mission Status Tracking ===");
+        createMissions();
+        
+        console.log("Testing mission status transitions: 0=NotRegistered, 1=Registered, 2=Completed");
+        
+        // Check initial statuses
+        console.log("\n--- Initial Status Check ---");
+        for (uint i = 0; i < 4; i++) {
+            address testFan = makeAddr(string(abi.encodePacked("fan", i)));
+            uint256 status = artistContract1.getStatuFanOnMission(0, testFan);
+            console.log("Fan", i, "initial status:", status);
+>>>>>>> Stashed changes
             assertEq(artistContract1.getStatuFanOnMission(0, makeAddr(string(abi.encodePacked("fan", i)))), 0); // Not registered
         }
         
         // Fans register and complete at different stages
+<<<<<<< Updated upstream
         vm.prank(fan1);
         artistContract1.registerFanOnMission(0, fan1);
         assertEq(artistContract1.getStatuFanOnMission(0, fan1), 1); // Registered
@@ -614,6 +887,33 @@ contract TestArtistAndFactory is Test {
         // Other fans still not registered
         assertEq(artistContract1.getStatuFanOnMission(0, fan2), 0);
         assertEq(artistContract1.getStatuFanOnMission(0, fan3), 0);
+=======
+        console.log("\n--- Fan1 Registration ---");
+        vm.prank(fan1);
+        artistContract1.registerFanOnMission(0, fan1);
+        uint256 fan1Status = artistContract1.getStatuFanOnMission(0, fan1);
+        console.log("Fan1 status after registration:", fan1Status);
+        assertEq(artistContract1.getStatuFanOnMission(0, fan1), 1); // Registered
+        
+        console.log("\n--- Fan1 Completion ---");
+        vm.prank(fan1);
+        artistContract1.completeFanMission(0, fan1);
+        fan1Status = artistContract1.getStatuFanOnMission(0, fan1);
+        console.log("Fan1 status after completion:", fan1Status);
+        assertEq(artistContract1.getStatuFanOnMission(0, fan1), 2); // Completed
+        
+        // Other fans still not registered
+        console.log("\n--- Other Fans Status Check ---");
+        uint256 fan2Status = artistContract1.getStatuFanOnMission(0, fan2);
+        uint256 fan3Status = artistContract1.getStatuFanOnMission(0, fan3);
+        console.log("Fan2 status (should be 0):", fan2Status);
+        console.log("Fan3 status (should be 0):", fan3Status);
+        
+        assertEq(artistContract1.getStatuFanOnMission(0, fan2), 0);
+        assertEq(artistContract1.getStatuFanOnMission(0, fan3), 0);
+        
+        console.log("[PASS] Test passed: Mission status tracking working correctly");
+>>>>>>> Stashed changes
     }
     
     function test_RewardStatusTracking() public {
@@ -676,6 +976,7 @@ contract TestArtistAndFactory is Test {
     }
     
     function test_CompleteWithoutRegistration() public {
+<<<<<<< Updated upstream
         createMissions();
         
         // Try to complete without registering
@@ -688,16 +989,60 @@ contract TestArtistAndFactory is Test {
     }
     
     function test_TokenEconomics() public {
+=======
+        console.log("=== TEST: Complete Without Registration ===");
+        createMissions();
+        
+        console.log("Testing auto-registration when completing mission without prior registration");
+        console.log("Fan1 initial status on mission 0:", artistContract1.getStatuFanOnMission(0, fan1));
+        console.log("Fan1 initial token balance:", fanToken1.balanceOf(fan1));
+        
+        // Try to complete without registering
+        console.log("\nFan1 attempting to complete mission 0 without registration");
+        vm.prank(fan1);
+        artistContract1.completeFanMission(0, fan1);
+        
+        uint256 finalStatus = artistContract1.getStatuFanOnMission(0, fan1);
+        uint256 finalBalance = fanToken1.balanceOf(fan1);
+        
+        console.log("Fan1 final status on mission 0:", finalStatus);
+        console.log("Fan1 final token balance:", finalBalance);
+        
+        // Should still work and auto-register
+        assertEq(artistContract1.getStatuFanOnMission(0, fan1), 2);
+        assertEq(fanToken1.balanceOf(fan1), 100);
+        
+        console.log("[PASS] Test passed: Auto-registration works when completing mission directly");
+    }
+    
+    function test_TokenEconomics() public {
+        console.log("=== TEST: Token Economics ===");
+>>>>>>> Stashed changes
         createMissions();
         createRewards();
         
         uint256 initialTotalSupply = fanToken1.totalSupply();
+<<<<<<< Updated upstream
         
         // Fan earns tokens
+=======
+        console.log("Initial total supply:", initialTotalSupply);
+        
+        // Fan earns tokens
+        console.log("\n--- Token Minting Phase ---");
+>>>>>>> Stashed changes
         vm.prank(fan1);
         artistContract1.registerFanOnMission(0, fan1);
         vm.prank(fan1);
         artistContract1.completeFanMission(0, fan1);
+<<<<<<< Updated upstream
+=======
+        console.log("Fan1 completed mission 0 (+100 tokens)");
+        
+        uint256 supplyAfterFirst = fanToken1.totalSupply();
+        console.log("Total supply after first mission:", supplyAfterFirst);
+        console.log("Supply increase:", supplyAfterFirst - initialTotalSupply);
+>>>>>>> Stashed changes
         
         // Total supply should increase by 100
         assertEq(fanToken1.totalSupply(), initialTotalSupply + 100);
@@ -706,14 +1051,24 @@ contract TestArtistAndFactory is Test {
         artistContract1.registerFanOnMission(1, fan1);
         vm.prank(fan1);
         artistContract1.completeFanMission(1, fan1);
+<<<<<<< Updated upstream
+=======
+        console.log("Fan1 completed mission 1 (+50 tokens)");
+        
+>>>>>>> Stashed changes
         vm.prank(fan1);
         artistContract1.registerFanOnMission(2, fan1);
         vm.prank(fan1);
         artistContract1.completeFanMission(2, fan1);
+<<<<<<< Updated upstream
+=======
+        console.log("Fan1 completed mission 2 (+75 tokens)");
+>>>>>>> Stashed changes
         
         uint256 supplyAfterMissions = fanToken1.totalSupply();
         uint256 fanBalanceBefore = fanToken1.balanceOf(fan1);
         
+<<<<<<< Updated upstream
         // Fan claims reward (burns tokens)
         vm.prank(fan1);
         artistContract1.claimRewardFan(0, fan1); // VIP Pass costs 150
@@ -724,3 +1079,37 @@ contract TestArtistAndFactory is Test {
         assertEq(fanToken1.balanceOf(fan1), fanBalanceBefore - burnAmount);
     }
 }
+=======
+        console.log("\n--- Before Reward Claim ---");
+        console.log("Total supply after all missions:", supplyAfterMissions);
+        console.log("Fan balance before claim:", fanBalanceBefore);
+        console.log("Expected total earned: 100 + 50 + 75 = 225 tokens");
+        
+        // Fan claims reward (burns tokens)
+        console.log("\n--- Token Burning Phase ---");
+        console.log("Fan1 claiming VIP Pass (150 tokens)");
+        console.log("Token economics: 40% burned, 60% to artist");
+        
+        vm.prank(fan1);
+        artistContract1.claimRewardFan(0, fan1); // VIP Pass costs 150
+        
+        uint256 finalSupply = fanToken1.totalSupply();
+        uint256 finalFanBalance = fanToken1.balanceOf(fan1);
+        
+        console.log("\n--- After Reward Claim ---");
+        console.log("Final total supply:", finalSupply);
+        console.log("Final fan balance:", finalFanBalance);
+        
+        // Check burn amount: (150 * 100) / 40 = 375
+        uint256 burnAmount = (150 * 100) / 40;
+        console.log("Expected burn amount:", burnAmount);
+        console.log("Actual supply decrease:", supplyAfterMissions - finalSupply);
+        console.log("Actual fan balance decrease:", fanBalanceBefore - finalFanBalance);
+        
+        assertEq(fanToken1.totalSupply(), supplyAfterMissions - burnAmount);
+        assertEq(fanToken1.balanceOf(fan1), fanBalanceBefore - burnAmount);
+        
+        console.log("[PASS] Test passed: Token economics working correctly (mint on mission complete, burn on reward claim)");
+    }
+}
+>>>>>>> Stashed changes
