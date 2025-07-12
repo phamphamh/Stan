@@ -20,6 +20,17 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
     return <div>{children}</div>
   }
 
+  // Si l'app ID Privy n'est pas configuré, on retourne juste les enfants avec QueryClient
+  if (!privyConfig.appId || privyConfig.appId === '') {
+    return (
+      <QueryClientProvider client={queryClient}>
+        <WagmiProvider config={wagmiConfig}>
+          {children}
+        </WagmiProvider>
+      </QueryClientProvider>
+    )
+  }
+
   return (
     <PrivyProvider
       appId={privyConfig.appId}

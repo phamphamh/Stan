@@ -9,7 +9,11 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  webpack: (config, { isServer }) => {
+  // Optimisations pour le développement
+  experimental: {
+    optimizePackageImports: ['@radix-ui/react-icons', 'lucide-react'],
+  },
+  webpack: (config, { isServer, dev }) => {
     if (isServer) {
       config.externals = config.externals || []
       config.externals.push({
@@ -18,7 +22,7 @@ const nextConfig = {
         'nock': 'nock'
       })
     }
-    
+
     config.resolve.fallback = {
       ...config.resolve.fallback,
       fs: false,
@@ -26,7 +30,7 @@ const nextConfig = {
       tls: false,
       crypto: false,
     }
-    
+
     return config
   },
 }

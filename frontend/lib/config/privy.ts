@@ -1,5 +1,5 @@
 export const privyConfig = {
-  appId: process.env.NEXT_PUBLIC_PRIVY_APP_ID || '',
+  appId: process.env.NEXT_PUBLIC_PRIVY_APP_ID || 'demo-app-id',
   config: {
     loginMethods: ['email', 'wallet'],
     appearance: {
