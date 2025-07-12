@@ -5,44 +5,28 @@ import { Button } from "@/components/ui/button"
 import { config } from "@/lib/config"
 import { motion } from "framer-motion"
 import Image from "next/image"
-
-const activeMissions = [
-  {
-    id: 1,
-    title: "Stream 'Pink Venom' 50 times",
-    description: "Help us reach streaming goals",
-    progress: 23,
-    goal: 50,
-    reward: "Exclusive BLACKPINK Photocard",
-    timeLeft: "2 days left",
-    image: "/placeholder.svg?height=80&width=80&text=Pink+Venom",
-    type: "stream",
-  },
-  {
-    id: 2,
-    title: "Complete 5 Daily Challenges",
-    description: "Finish today's mission streak",
-    progress: 3,
-    goal: 5,
-    reward: "Limited Edition Sticker Pack",
-    timeLeft: "12 hours left",
-    image: "/placeholder.svg?height=80&width=80&text=Challenges",
-    type: "daily",
-  },
-  {
-    id: 3,
-    title: "Share 3 BLACKPINK Posts",
-    description: "Spread the love across social media",
-    progress: 1,
-    goal: 3,
-    reward: "Digital Wallpaper Collection",
-    timeLeft: "1 day left",
-    image: "/placeholder.svg?height=80&width=80&text=Share",
-    type: "social",
-  },
-]
+import { useState } from "react"
+import { useTokens } from "@/lib/tokens-context"
+import ProofUploadModal from "@/components/modals/proof-upload-modal"
 
 export default function ActiveMissions() {
+  const { missions, completeMission } = useTokens()
+  const [showProofModal, setShowProofModal] = useState(false)
+  const [selectedMission, setSelectedMission] = useState<number | null>(null)
+
+  const handleCompleteClick = (missionId: number) => {
+    setSelectedMission(missionId)
+    setShowProofModal(true)
+  }
+
+  const handleProofSubmit = () => {
+    if (selectedMission) {
+      completeMission(selectedMission)
+    }
+    setShowProofModal(false)
+    setSelectedMission(null)
+  }
+
   return (
     <div className="space-y-4">
       <div className="text-center mb-6">
@@ -66,9 +50,8 @@ export default function ActiveMissions() {
       </div>
 
       <div className="space-y-4">
-        {activeMissions.map((mission, index) => {
-          const progressPercentage = (mission.progress / mission.goal) * 100
-          const isCompleted = mission.progress >= mission.goal
+        {missions.map((mission, index) => {
+          const isCompleted = mission.isCompleted
 
           return (
             <motion.div
@@ -76,11 +59,11 @@ export default function ActiveMissions() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className="bg-[#1a1f2c] rounded-lg p-4"
+              className={`bg-[#1a1f2c] rounded-lg p-4 ${isCompleted ? 'opacity-75' : ''}`}
             >
               <div className="flex items-start gap-4">
                 <Image
-                  src={mission.image || "/placeholder.svg"}
+                  src="/placeholder.svg?height=80&width=80&text=Mission"
                   alt={mission.title}
                   width={80}
                   height={80}
@@ -90,43 +73,28 @@ export default function ActiveMissions() {
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-2">
                     <h3 className="font-semibold text-white">{mission.title}</h3>
-                    <div className="flex items-center gap-1 text-gray-400 text-sm">
-                      <Clock className="h-4 w-4" />
-                      <span>{mission.timeLeft}</span>
-                    </div>
+                    {!isCompleted && (
+                      <div className="flex items-center gap-1 text-gray-400 text-sm">
+                        <Clock className="h-4 w-4" />
+                        <span>2 days left</span>
+                      </div>
+                    )}
                   </div>
 
                   <p className="text-sm text-gray-400 mb-3">{mission.description}</p>
-
-                  <div className="mb-3">
-                    <div className="flex justify-between text-sm mb-1">
-                      <span className="text-gray-300">Progress</span>
-                      <span className="text-white">
-                        {mission.progress} / {mission.goal}
-                      </span>
-                    </div>
-                    <div className="h-2 w-full rounded-full bg-gray-700">
-                      <div
-                        className="h-full rounded-full transition-all duration-500"
-                        style={{
-                          width: `${progressPercentage}%`,
-                          backgroundColor: config.group.theme.primary,
-                        }}
-                      />
-                    </div>
-                  </div>
 
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <Gift className="h-4 w-4" style={{ color: config.group.theme.primary }} />
                       <span className="text-sm font-medium" style={{ color: config.group.theme.primary }}>
-                        {mission.reward}
+                        {mission.reward} Tokens
                       </span>
                     </div>
 
                     <Button
                       size="sm"
                       disabled={isCompleted}
+                      onClick={() => handleCompleteClick(mission.id)}
                       style={{
                         backgroundColor: isCompleted ? "#333" : config.group.theme.primary,
                         color: "white",
@@ -140,7 +108,7 @@ export default function ActiveMissions() {
                       ) : (
                         <>
                           <Target className="mr-1 h-4 w-4" />
-                          Continue
+                          Complete
                         </>
                       )}
                     </Button>
@@ -151,6 +119,13 @@ export default function ActiveMissions() {
           )
         })}
       </div>
+
+      <ProofUploadModal
+        isOpen={showProofModal}
+        onClose={() => setShowProofModal(false)}
+        onSubmit={handleProofSubmit}
+        missionTitle={selectedMission ? missions.find(m => m.id === selectedMission)?.title || "" : ""}
+      />
     </div>
   )
 }

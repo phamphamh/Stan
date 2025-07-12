@@ -16,6 +16,6 @@ export const config = {
     level: 15,
     xp: 3200,
     nextLevelXp: 4000,
-    tokens: 1250.5,
+    tokens: 0,
   },
 }

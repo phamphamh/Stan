@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { Poppins } from "next/font/google"
 import "./globals.css"
 import { cn } from "@/lib/utils"
+import { TokensProvider } from "@/lib/tokens-context"
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -14,7 +15,7 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   title: "BLACKPINK Fan App",
   description: "The ultimate mobile experience for BLINKs.",
-    generator: 'v0.dev'
+  generator: 'v0.dev'
 }
 
 export default function RootLayout({
@@ -30,7 +31,9 @@ export default function RootLayout({
           poppins.className,
         )}
       >
-        {children}
+        <TokensProvider>
+          {children}
+        </TokensProvider>
       </body>
     </html>
   )

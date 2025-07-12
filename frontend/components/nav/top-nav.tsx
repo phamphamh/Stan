@@ -6,9 +6,11 @@ import ProfileModal from "@/components/modals/profile-modal"
 import Image from "next/image"
 import Link from "next/link"
 import { config } from "@/lib/config"
+import { useTokens } from "@/lib/tokens-context"
 
 export default function TopNav() {
   const [showProfile, setShowProfile] = useState(false)
+  const { tokens } = useTokens()
 
   return (
     <>
@@ -31,7 +33,7 @@ export default function TopNav() {
               }}
             >
               <Coins className="h-4 w-4" />
-              <span>{config.user.tokens.toFixed(1)}</span>
+              <span>{tokens}</span>
             </div>
           </Link>
 
