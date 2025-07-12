@@ -1,59 +1,59 @@
 "use client"
 
-import { Award, Calendar, Star, Trophy, Medal, Crown, Share, MessageCircle } from "lucide-react"
+import { Award, Calendar, Star, Trophy, Medal, Crown } from "lucide-react"
 import Image from "next/image"
 import { config } from "@/lib/config"
 import { Button } from "@/components/ui/button"
 import { motion } from "framer-motion"
+import { useTokens } from "@/lib/tokens-context"
 
 interface UserProfileProps {
   userId: string
 }
 
 // Mock data for different users
-const getUserData = (userId: string) => {
+const getUserData = (userId: string, tokens: number, completedMissions: number) => {
+  const level = Math.floor(completedMissions / 2) + 1 // Level increases every 2 missions
+
   const users = {
     "1": {
       id: "1",
-      username: "OrbitalFan",
+      username: "BlinkQueen",
       bio: "BLACKPINK forever 💖 Jennie bias since 2016. Content creator and devoted fan!",
-      avatar: "/placeholder.svg?height=120&width=120&text=OrbitalFan",
-      level: 28,
-      tokensEarned: 2680,
-      activeDays: 245,
+      avatar: "/placeholder.svg?height=120&width=120&text=BlinkQueen",
+      level,
+      tokensEarned: tokens,
       joinDate: "March 2022",
       rank: 1,
       badges: [
         { name: "BLINK #1", icon: Star, color: config.group.theme.primary },
         { name: "Top Streamer", icon: Award, color: "#fbbf24" },
         { name: "Creator", icon: Trophy, color: "#8b5cf6" },
-        { name: "Loyal", icon: Calendar, color: "#06b6d4" },
+        { name: "Loyal Fan", icon: Calendar, color: "#06b6d4" },
       ],
     },
     "2": {
       id: "2",
-      username: "LunarOrbit",
+      username: "LisaLover",
       bio: "Lisa stan 🌙 Amateur dancer and photocard collector. BORN PINK era best era!",
-      avatar: "/placeholder.svg?height=120&width=120&text=LunarOrbit",
-      level: 25,
-      tokensEarned: 2450,
-      activeDays: 198,
+      avatar: "/placeholder.svg?height=120&width=120&text=LisaLover",
+      level,
+      tokensEarned: tokens,
       joinDate: "June 2022",
       rank: 2,
       badges: [
         { name: "Dancer", icon: Star, color: "#f59e0b" },
         { name: "Collector", icon: Award, color: "#10b981" },
-        { name: "Active", icon: Calendar, color: "#3b82f6" },
+        { name: "Active Fan", icon: Calendar, color: "#3b82f6" },
       ],
     },
     "3": {
       id: "3",
-      username: "StarGazer",
+      username: "RoseFan",
       bio: "Rosé voice = heaven 🌹 Guitarist and ballad lover. How You Like That changed my life!",
-      avatar: "/placeholder.svg?height=120&width=120&text=StarGazer",
-      level: 23,
-      tokensEarned: 2390,
-      activeDays: 167,
+      avatar: "/placeholder.svg?height=120&width=120&text=RoseFan",
+      level,
+      tokensEarned: tokens,
       joinDate: "August 2022",
       rank: 3,
       badges: [
@@ -67,7 +67,9 @@ const getUserData = (userId: string) => {
 }
 
 export default function UserProfile({ userId }: UserProfileProps) {
-  const user = getUserData(userId)
+  const { tokens, missions } = useTokens()
+  const completedMissions = missions.filter(m => m.isCompleted).length
+  const user = getUserData(userId, tokens, completedMissions)
 
   const getRankIcon = () => {
     switch (user.rank) {
@@ -134,7 +136,7 @@ export default function UserProfile({ userId }: UserProfileProps) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="grid grid-cols-3 gap-4 text-center"
+        className="grid grid-cols-2 gap-4 text-center"
       >
         <div className="rounded-lg bg-[#1a1f2c] p-4">
           <div className="flex items-center justify-center gap-1 mb-2" style={{ color: config.group.theme.primary }}>
@@ -142,13 +144,6 @@ export default function UserProfile({ userId }: UserProfileProps) {
             <span className="text-xl font-bold">{user.tokensEarned}</span>
           </div>
           <p className="text-sm text-gray-400">Tokens Earned</p>
-        </div>
-        <div className="rounded-lg bg-[#1a1f2c] p-4">
-          <div className="flex items-center justify-center gap-1 mb-2 text-orange-400">
-            <Calendar className="h-5 w-5" />
-            <span className="text-xl font-bold">{user.activeDays}</span>
-          </div>
-          <p className="text-sm text-gray-400">Active Days</p>
         </div>
         <div className="rounded-lg bg-[#1a1f2c] p-4">
           <div className="flex items-center justify-center gap-1 mb-2 text-yellow-400">
@@ -196,23 +191,6 @@ export default function UserProfile({ userId }: UserProfileProps) {
             <p className="text-sm text-gray-400">{user.joinDate}</p>
           </div>
         </div>
-      </motion.div>
-
-      {/* Actions */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-        className="flex gap-3"
-      >
-        <Button className="flex-1 gap-2" style={{ backgroundColor: config.group.theme.primary }}>
-          <MessageCircle className="h-4 w-4" />
-          Message
-        </Button>
-        <Button variant="outline" className="gap-2 bg-transparent">
-          <Share className="h-4 w-4" />
-          Share
-        </Button>
       </motion.div>
     </div>
   )

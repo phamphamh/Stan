@@ -7,6 +7,13 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 
 const blackpinkNews = [
   {
+    id: "3",
+    title: "JUMP - New Song Dropped!",
+    subtitle: "BLACKPINK's newest release is here! Stream now",
+    imageUrl: "/images/jump.webp",
+    tag: "New Release",
+  },
+  {
     id: "1",
     title: "BORN PINK World Tour - Deadline Started!",
     subtitle: "Don't miss your chance to see BLACKPINK live",
@@ -19,13 +26,6 @@ const blackpinkNews = [
     subtitle: "Almost reaching 1 billion views",
     imageUrl: "/images/pink_venom.webp",
     tag: "Milestone",
-  },
-  {
-    id: "3",
-    title: "JUMP - New Song Dropped!",
-    subtitle: "BLACKPINK's newest release is here! Stream now",
-    imageUrl: "/images/jump.webp",
-    tag: "New Release",
   },
 ]
 

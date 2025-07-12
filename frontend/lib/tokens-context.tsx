@@ -23,6 +23,13 @@ interface TokensContextType {
     description: string
     timestamp: Date
   }>
+  setTransactions: React.Dispatch<React.SetStateAction<Array<{
+    id: string
+    type: string
+    amount: number
+    description: string
+    timestamp: Date
+  }>>>
 }
 
 const TokensContext = createContext<TokensContextType | undefined>(undefined)
@@ -144,6 +151,7 @@ export function TokensProvider({ children }: { children: React.ReactNode }) {
       missions,
       completeMission,
       transactions,
+      setTransactions,
     }}>
       {children}
     </TokensContext.Provider>

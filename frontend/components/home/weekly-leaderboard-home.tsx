@@ -7,9 +7,9 @@ import Link from "next/link"
 import { motion } from "framer-motion"
 
 const mockLeaderboard = [
-  { id: "1", username: "OrbitalFan", avatar: "/placeholder.svg?height=40&width=40", tokensEarned: 2680, rank: 1 },
-  { id: "2", username: "LunarOrbit", avatar: "/placeholder.svg?height=40&width=40", tokensEarned: 2450, rank: 2 },
-  { id: "3", username: "StarGazer", avatar: "/placeholder.svg?height=40&width=40", tokensEarned: 2390, rank: 3 },
+  { id: "1", username: "JennieKim", avatar: "/placeholder.svg?height=40&width=40&text=J", tokensEarned: 2680, rank: 1 },
+  { id: "2", username: "LalisaManoban", avatar: "/placeholder.svg?height=40&width=40&text=L", tokensEarned: 2450, rank: 2 },
+  { id: "3", username: "RoseanePark", avatar: "/placeholder.svg?height=40&width=40&text=R", tokensEarned: 2390, rank: 3 },
 ]
 
 export default function WeeklyLeaderboardHome() {

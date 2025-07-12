@@ -15,18 +15,17 @@ export default function MissionsPage() {
 
   return (
     <AppShell topNav={<TopNav />} bottomNav={<BottomNav activeTab="Missions" />}>
-      <TabBar tabs={["Active Missions", "Clip Farm", "Stream", "Shop", "Live"]} onTabChange={setActiveTab} />
+      <TabBar tabs={["Active Missions", "Content", "Stream (Soon)", "Shop (Soon)", "Live (Soon)"]} onTabChange={setActiveTab} />
       <div className="flex-1 overflow-y-auto p-4">
         {activeTab === "Active Missions" && <ActiveMissions />}
-        {activeTab === "Clip Farm" && <ClipFarmMission />}
-        {activeTab === "Stream" && <StreamMission />}
-        {activeTab === "Shop" && <ShopMission />}
-        {/* Placeholder for Live */}
-        {activeTab === "Live" && (
+        {activeTab === "Content" && <ClipFarmMission />}
+        {(activeTab === "Stream (Soon)" || activeTab === "Shop (Soon)" || activeTab === "Live (Soon)") && (
           <div className="space-y-4">
-            <h2 className="text-xl font-bold text-white">Live Missions</h2>
-            <p className="text-gray-400">Join live streams and earn tokens</p>
-            <div className="text-center text-gray-400 py-8">Live mission content coming soon.</div>
+            <h2 className="text-xl font-bold text-white">Coming Soon</h2>
+            <div className="text-center text-gray-400 py-8">
+              <p className="text-lg mb-2">🚀 This feature is coming soon!</p>
+              <p className="text-sm">We're working hard to bring you more exciting missions.</p>
+            </div>
           </div>
         )}
         <div className="h-16" />

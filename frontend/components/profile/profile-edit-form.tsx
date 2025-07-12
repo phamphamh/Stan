@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Camera, Check, X, AlertCircle } from "lucide-react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
@@ -8,16 +8,33 @@ import { config } from "@/lib/config"
 import { motion, AnimatePresence } from "framer-motion"
 
 export default function ProfileEditForm() {
-  const [username, setUsername] = useState(config.user.name)
-  const [bio, setBio] = useState("BLINK since 2016 💖 Stan BLACKPINK forever")
+  const [username, setUsername] = useState("")
+  const [bio, setBio] = useState("")
   const [profileImage, setProfileImage] = useState("/placeholder.svg?height=120&width=120&text=User")
   const [isCheckingUsername, setIsCheckingUsername] = useState(false)
   const [usernameStatus, setUsernameStatus] = useState<"available" | "taken" | "checking" | null>(null)
   const [hasChanges, setHasChanges] = useState(false)
 
+  // Load saved profile data
+  useEffect(() => {
+    const savedProfile = localStorage.getItem('blackpink-profile')
+    if (savedProfile) {
+      const profile = JSON.parse(savedProfile)
+      setUsername(profile.username || "BLINK_Fan_01")
+      setBio(profile.bio || "BLACKPINK forever 💖 Stan since 2016")
+      setProfileImage(profile.profileImage || "/placeholder.svg?height=120&width=120&text=User")
+    } else {
+      setUsername("BLINK_Fan_01")
+      setBio("BLACKPINK forever 💖 Stan since 2016")
+    }
+  }, [])
+
   // Simulated username availability check
   const checkUsernameAvailability = async (newUsername: string) => {
-    if (newUsername === config.user.name) {
+    const savedProfile = localStorage.getItem('blackpink-profile')
+    const originalUsername = savedProfile ? JSON.parse(savedProfile).username : "BLINK_Fan_01"
+
+    if (newUsername === originalUsername) {
       setUsernameStatus(null)
       return
     }
@@ -29,7 +46,7 @@ export default function ProfileEditForm() {
     await new Promise((resolve) => setTimeout(resolve, 1000))
 
     // Simulate some usernames being taken
-    const takenUsernames = ["BLINK_Queen", "Jennie_Stan", "Lisa_Lover", "Rose_Fan"]
+    const takenUsernames = ["BlinkQueen", "LisaLover", "RoseFan", "JennieStAN"]
     const isAvailable = !takenUsernames.includes(newUsername)
 
     setUsernameStatus(isAvailable ? "available" : "taken")
@@ -70,9 +87,18 @@ export default function ProfileEditForm() {
   }
 
   const handleSave = () => {
-    // Simulate save
+    // Save to localStorage
+    const profileData = {
+      username,
+      bio,
+      profileImage,
+      updatedAt: new Date().toISOString()
+    }
+    localStorage.setItem('blackpink-profile', JSON.stringify(profileData))
     setHasChanges(false)
-    // Show success message or redirect
+
+    // Show success feedback
+    alert("Profile updated successfully!")
   }
 
   const getUsernameStatusIcon = () => {
@@ -187,7 +213,7 @@ export default function ProfileEditForm() {
             backgroundColor: hasChanges && usernameStatus !== "taken" ? config.group.theme.primary : "#333",
           }}
         >
-          {isCheckingUsername ? "Checking..." : "Save"}
+          {isCheckingUsername ? "Checking..." : "Save Changes"}
         </Button>
         <Button variant="outline" className="px-6 bg-transparent" onClick={() => window.history.back()}>
           Cancel
