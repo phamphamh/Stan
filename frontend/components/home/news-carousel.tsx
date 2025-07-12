@@ -8,24 +8,24 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 const blackpinkNews = [
   {
     id: "1",
-    title: "BORN PINK World Tour Finale",
-    subtitle: "Official Announcement",
-    imageUrl: "/placeholder.svg?height=450&width=800&text=BORN+PINK+Tour",
-    tag: "Tour",
+    title: "BORN PINK World Tour - Deadline Started!",
+    subtitle: "Don't miss your chance to see BLACKPINK live",
+    imageUrl: "/images/deadline.webp",
+    tag: "Breaking",
   },
   {
     id: "2",
-    title: "'Pink Venom' MV Reaches 1B Views",
-    subtitle: "New Milestone Achieved",
-    imageUrl: "/placeholder.svg?height=450&width=800&text=Pink+Venom+1B",
+    title: "'Pink Venom' MV",
+    subtitle: "Almost reaching 1 billion views",
+    imageUrl: "/images/pink_venom.webp",
     tag: "Milestone",
   },
   {
     id: "3",
-    title: "JISOO 'FLOWER' Dance Practice",
-    subtitle: "Behind the Scenes",
-    imageUrl: "/placeholder.svg?height=450&width=800&text=JISOO+FLOWER",
-    tag: "Exclusive",
+    title: "JUMP - New Song Dropped!",
+    subtitle: "BLACKPINK's newest release is here! Stream now",
+    imageUrl: "/images/jump.webp",
+    tag: "New Release",
   },
 ]
 

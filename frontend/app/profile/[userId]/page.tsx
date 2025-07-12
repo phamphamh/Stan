@@ -20,7 +20,7 @@ export default function ProfilePage({ params }: ProfilePageProps) {
           <Link href="/leaderboard" className="text-gray-400 hover:text-white">
             <ArrowLeft className="h-6 w-6" />
           </Link>
-          <h1 className="text-xl font-bold text-white">Profil utilisateur</h1>
+          <h1 className="text-xl font-bold text-white">User Profile</h1>
         </div>
 
         <div className="p-4">

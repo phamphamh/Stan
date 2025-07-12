@@ -14,9 +14,11 @@ export default function TopNav() {
     <>
       <header className="flex h-14 flex-shrink-0 items-center justify-between px-4">
         <div className="flex items-center gap-1">
-          <h1 className="text-xl font-bold text-white" style={{ color: config.group.theme.primary }}>
-            BLACKPINK
-          </h1>
+          <Link href="/" className="hover:opacity-80 transition-opacity">
+            <h1 className="text-xl font-bold text-white cursor-pointer" style={{ color: config.group.theme.primary }}>
+              BLACKPINK
+            </h1>
+          </Link>
         </div>
         <div className="flex items-center gap-3">
           {/* Token Balance - Clickable */}

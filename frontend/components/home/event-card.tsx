@@ -6,15 +6,16 @@ import { CalendarCheck2, Gift, Clock } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { config } from "@/lib/config"
 import Image from "next/image"
+import Link from "next/link"
 import type { EventItem } from "@/lib/types"
 
 const blackpinkEvent: EventItem = {
   id: "1",
   title: "BORN PINK Encore",
-  description: "Participez aux missions pour gagner des tickets !",
+  description: "Complete missions to win free BLACKPINK photocards!",
   progress: 4,
   maxProgress: 7,
-  reward: "Tickets pour le concert",
+  reward: "Free BLACKPINK Photocards",
   endDate: "2025-08-26",
 }
 
@@ -36,24 +37,24 @@ export default function EventCard() {
         <div
           className="absolute inset-0"
           style={{
-            background: `radial-gradient(circle at 75% 25%, 
-              transparent 20%, 
-              rgba(255,255,255,0.1) 20.5%, 
-              rgba(255,255,255,0.1) 21%, 
+            background: `radial-gradient(circle at 75% 25%,
+              transparent 20%,
+              rgba(255,255,255,0.1) 20.5%,
+              rgba(255,255,255,0.1) 21%,
               transparent 21.5%),
-            conic-gradient(from 0deg at 75% 25%, 
-              transparent 0deg, 
-              rgba(255,255,255,0.08) 10deg, 
-              transparent 20deg, 
-              rgba(255,255,255,0.08) 30deg, 
-              transparent 40deg, 
-              rgba(255,255,255,0.08) 50deg, 
-              transparent 60deg, 
-              rgba(255,255,255,0.08) 70deg, 
-              transparent 80deg, 
-              rgba(255,255,255,0.08) 90deg, 
-              transparent 100deg, 
-              rgba(255,255,255,0.08) 110deg, 
+            conic-gradient(from 0deg at 75% 25%,
+              transparent 0deg,
+              rgba(255,255,255,0.08) 10deg,
+              transparent 20deg,
+              rgba(255,255,255,0.08) 30deg,
+              transparent 40deg,
+              rgba(255,255,255,0.08) 50deg,
+              transparent 60deg,
+              rgba(255,255,255,0.08) 70deg,
+              transparent 80deg,
+              rgba(255,255,255,0.08) 90deg,
+              transparent 100deg,
+              rgba(255,255,255,0.08) 110deg,
               transparent 120deg)`,
           }}
         />
@@ -113,13 +114,14 @@ export default function EventCard() {
         <div className="mb-2 mt-12">
           <p className="text-xs text-white/90 drop-shadow-sm leading-relaxed">{event.description}</p>
         </div>
-        <Button
-          onClick={() => setShowDetails(!showDetails)}
-          variant="ghost"
-          className="w-full text-white hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-lg font-medium"
-        >
-          {showDetails ? "Masquer les détails" : "Voir les détails"}
-        </Button>
+        <Link href="/missions">
+          <Button
+            variant="ghost"
+            className="w-full text-white hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-lg font-medium"
+          >
+            View Details
+          </Button>
+        </Link>
         <motion.div
           initial={false}
           animate={{ height: showDetails ? "auto" : 0, opacity: showDetails ? 1 : 0 }}
@@ -130,13 +132,13 @@ export default function EventCard() {
               <div className="p-1.5 rounded bg-white/20">
                 <Gift className="h-4 w-4" />
               </div>
-              <span className="text-xs font-medium drop-shadow-sm">Récompense: {event.reward}</span>
+              <span className="text-xs font-medium drop-shadow-sm">Reward: {event.reward}</span>
             </div>
             <div className="flex items-center gap-3 text-white/90">
               <div className="p-1.5 rounded bg-white/20">
                 <Clock className="h-4 w-4" />
               </div>
-              <span className="text-xs font-medium drop-shadow-sm">Se termine le: {event.endDate}</span>
+              <span className="text-xs font-medium drop-shadow-sm">Ends: {event.endDate}</span>
             </div>
           </div>
         </motion.div>

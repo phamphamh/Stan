@@ -5,6 +5,7 @@ import NewsCarousel from "@/components/home/news-carousel"
 import EventCard from "@/components/home/event-card"
 import NewsGrid from "@/components/home/news-grid"
 import WeeklyLeaderboardHome from "@/components/home/weekly-leaderboard-home"
+import AboutUs from "@/components/home/about-us"
 
 export default function HomePage() {
   return (
@@ -14,6 +15,7 @@ export default function HomePage() {
         <EventCard />
         <NewsGrid />
         <WeeklyLeaderboardHome />
+        <AboutUs />
         <div className="h-16" />
       </div>
     </AppShell>

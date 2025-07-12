@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from "framer-motion"
 
 export default function ProfileEditForm() {
   const [username, setUsername] = useState(config.user.name)
-  const [bio, setBio] = useState("BLINK depuis 2016 💖 Stan BLACKPINK forever")
+  const [bio, setBio] = useState("BLINK since 2016 💖 Stan BLACKPINK forever")
   const [profileImage, setProfileImage] = useState("/placeholder.svg?height=120&width=120&text=User")
   const [isCheckingUsername, setIsCheckingUsername] = useState(false)
   const [usernameStatus, setUsernameStatus] = useState<"available" | "taken" | "checking" | null>(null)
@@ -91,11 +91,11 @@ export default function ProfileEditForm() {
   const getUsernameStatusText = () => {
     switch (usernameStatus) {
       case "checking":
-        return "Vérification..."
+        return "Checking..."
       case "available":
-        return "Pseudo disponible"
+        return "Username available"
       case "taken":
-        return "Pseudo déjà pris"
+        return "Username already taken"
       default:
         return ""
     }
@@ -121,19 +121,19 @@ export default function ProfileEditForm() {
             <Camera className="h-4 w-4" />
           </button>
         </div>
-        <p className="text-sm text-gray-400 mt-2">Cliquez sur l'icône pour changer votre photo</p>
+        <p className="text-sm text-gray-400 mt-2">Click the icon to change your photo</p>
       </div>
 
       {/* Username */}
       <div className="space-y-2">
-        <label className="text-sm font-medium text-white">Pseudo</label>
+        <label className="text-sm font-medium text-white">Username</label>
         <div className="relative">
           <input
             type="text"
             value={username}
             onChange={(e) => handleUsernameChange(e.target.value)}
             className="w-full rounded-lg bg-[#1a1f2c] border border-gray-700 px-3 py-2 text-white placeholder-gray-400 focus:border-pink-500 focus:outline-none"
-            placeholder="Votre pseudo"
+            placeholder="Your username"
             maxLength={20}
           />
           <div className="absolute right-3 top-1/2 -translate-y-1/2">{getUsernameStatusIcon()}</div>
@@ -157,7 +157,7 @@ export default function ProfileEditForm() {
             </motion.div>
           )}
         </AnimatePresence>
-        <p className="text-xs text-gray-500">3-20 caractères, lettres et chiffres uniquement</p>
+        <p className="text-xs text-gray-500">3-20 characters, letters and numbers only</p>
       </div>
 
       {/* Bio */}
@@ -167,12 +167,12 @@ export default function ProfileEditForm() {
           value={bio}
           onChange={(e) => handleBioChange(e.target.value)}
           className="w-full rounded-lg bg-[#1a1f2c] border border-gray-700 px-3 py-2 text-white placeholder-gray-400 focus:border-pink-500 focus:outline-none resize-none"
-          placeholder="Parlez-nous de vous..."
+          placeholder="Tell us about yourself..."
           rows={3}
           maxLength={150}
         />
         <div className="flex justify-between text-xs text-gray-500">
-          <span>Décrivez votre passion pour BLACKPINK</span>
+          <span>Describe your passion for BLACKPINK</span>
           <span>{bio.length}/150</span>
         </div>
       </div>
@@ -187,10 +187,10 @@ export default function ProfileEditForm() {
             backgroundColor: hasChanges && usernameStatus !== "taken" ? config.group.theme.primary : "#333",
           }}
         >
-          {isCheckingUsername ? "Vérification..." : "Sauvegarder"}
+          {isCheckingUsername ? "Checking..." : "Save"}
         </Button>
         <Button variant="outline" className="px-6 bg-transparent" onClick={() => window.history.back()}>
-          Annuler
+          Cancel
         </Button>
       </div>
     </div>

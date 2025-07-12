@@ -14,7 +14,7 @@ export default function ProfileEditPage() {
           <Link href="/" className="text-gray-400 hover:text-white">
             <ArrowLeft className="h-6 w-6" />
           </Link>
-          <h1 className="text-xl font-bold text-white">Modifier le profil</h1>
+          <h1 className="text-xl font-bold text-white">Edit Profile</h1>
         </div>
 
         <div className="p-4">

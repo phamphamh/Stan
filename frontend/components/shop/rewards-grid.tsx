@@ -1,53 +1,56 @@
 "use client"
 
 import { useState } from "react"
-import { Coins, Ticket, Mic, Gift, Check, Vote, Users, Clock, Sparkles } from "lucide-react"
+import { Coins, Ticket, Mic, Gift, Check, Vote, Users, Clock, Sparkles, Lock } from "lucide-react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { config } from "@/lib/config"
 import { motion, AnimatePresence } from "framer-motion"
 
-const rewards = [
-  {
-    id: "1",
-    name: "Vote: Prochain Titre",
-    description: "Votez pour la chanson titre du prochain comeback.",
-    cost: 100,
-    image: "/placeholder.svg?height=200&width=200&text=Vote",
-    icon: Mic,
-    type: "vote",
-    voteOptions: [
-      { id: "song1", name: "Pink Dreams", description: "Une ballade émotionnelle avec des mélodies douces" },
-      { id: "song2", name: "Fire Crown", description: "Un titre puissant et énergique qui fait danser" },
-      { id: "song3", name: "Midnight Rose", description: "Un concept sombre et mystérieux très stylé" },
-      { id: "song4", name: "Diamond Heart", description: "Un hymne d'amour moderne et touchant" },
-    ],
-  },
-  {
-    id: "2",
-    name: "Loterie Fan Call",
-    description: "Tentez de gagner un appel vidéo avec un membre.",
-    cost: 250,
-    image: "/placeholder.svg?height=200&width=200&text=Fan+Call",
-    icon: Ticket,
-    type: "lottery",
-    participants: 1247,
-    endDate: "15 Décembre 2024",
-    prize: "Appel vidéo de 5 minutes avec un membre de BLACKPINK",
-  },
+const availableRewards = [
   {
     id: "3",
-    name: "Photocard Exclusive",
-    description: "Recevez une photocard inédite et signée.",
+    name: "Exclusive Photocard",
+    description: "Receive an unreleased and signed photocard.",
     cost: 500,
     image: "/placeholder.svg?height=200&width=200&text=Photocard",
     icon: Gift,
     type: "instant",
   },
+]
+
+const unavailableRewards = [
+  {
+    id: "1",
+    name: "Vote: Next Title Song",
+    description: "Vote for the title song of the next comeback.",
+    cost: 100,
+    image: "/placeholder.svg?height=200&width=200&text=Vote",
+    icon: Mic,
+    type: "vote",
+    voteOptions: [
+      { id: "song1", name: "Pink Dreams", description: "An emotional ballad with sweet melodies" },
+      { id: "song2", name: "Fire Crown", description: "A powerful and energetic dance track" },
+      { id: "song3", name: "Midnight Rose", description: "A dark and mysterious concept that's very stylish" },
+      { id: "song4", name: "Diamond Heart", description: "A modern and touching love anthem" },
+    ],
+  },
+  {
+    id: "2",
+    name: "Fan Call Lottery",
+    description: "Try to win a video call with a member.",
+    cost: 250,
+    image: "/placeholder.svg?height=200&width=200&text=Fan+Call",
+    icon: Ticket,
+    type: "lottery",
+    participants: 1247,
+    endDate: "December 15, 2024",
+    prize: "5-minute video call with a BLACKPINK member",
+  },
   {
     id: "4",
-    name: "Vote: Concept Visuel",
-    description: "Choisissez le concept du prochain photoshoot.",
+    name: "Vote: Visual Concept",
+    description: "Choose the concept for the next photoshoot.",
     cost: 75,
     image: "/placeholder.svg?height=200&width=200&text=Concept+Vote",
     icon: Vote,
@@ -56,23 +59,23 @@ const rewards = [
       {
         id: "concept1",
         name: "Elegant Royal",
-        description: "Concept royal et sophistiqué avec des robes de princesse",
+        description: "Royal and sophisticated concept with princess gowns",
       },
-      { id: "concept2", name: "Street Fashion", description: "Style urbain et moderne avec des tenues décontractées" },
-      { id: "concept3", name: "Vintage Glam", description: "Glamour rétro des années 90 avec des looks iconiques" },
+      { id: "concept2", name: "Street Fashion", description: "Urban and modern style with casual outfits" },
+      { id: "concept3", name: "Vintage Glam", description: "Retro 90s glamour with iconic looks" },
     ],
   },
   {
     id: "5",
-    name: "Loterie Merchandise",
-    description: "Gagnez un pack exclusif de goodies BLACKPINK.",
+    name: "Merchandise Lottery",
+    description: "Win an exclusive BLACKPINK goodies pack.",
     cost: 150,
     image: "/placeholder.svg?height=200&width=200&text=Merch+Pack",
     icon: Gift,
     type: "lottery",
     participants: 892,
-    endDate: "20 Décembre 2024",
-    prize: "Pack complet : lightstick, album signé, photocards et poster",
+    endDate: "December 20, 2024",
+    prize: "Complete pack: lightstick, signed album, photocards and poster",
   },
 ]
 
@@ -139,69 +142,97 @@ export default function RewardsGrid() {
     return false
   }
 
-  return (
-    <div className="space-y-4">
-      <h2 className="text-xl font-bold text-white">Récompenses Exclusives</h2>
-      <div className="grid grid-cols-2 gap-4">
-        {rewards.map((reward) => {
-          const isCompleted = isRewardCompleted(reward)
+  const RewardCard = ({ reward, isAvailable = true }) => {
+    const isCompleted = isRewardCompleted(reward)
 
-          return (
-            <motion.div
-              key={reward.id}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="rounded-lg bg-[#1a1f2c] p-3 text-center"
-            >
-              <div className="relative mb-2">
-                <Image
-                  src={reward.image || "/placeholder.svg"}
-                  alt={reward.name}
-                  width={200}
-                  height={200}
-                  className="h-24 w-full rounded object-cover"
-                />
-                <div className="absolute inset-0 flex items-center justify-center rounded bg-black/50">
-                  <reward.icon className="h-8 w-8 text-white" />
-                </div>
-                {reward.type === "lottery" && (
-                  <div className="absolute top-1 right-1 rounded bg-blue-500 px-1 py-0.5 text-xs text-white">
-                    {reward.participants} participants
-                  </div>
-                )}
-                {isCompleted && (
-                  <div className="absolute top-1 left-1 rounded-full bg-green-500 p-1">
-                    <Check className="h-3 w-3 text-white" />
-                  </div>
-                )}
-              </div>
-              <h3 className="mb-1 text-sm font-semibold text-white">{reward.name}</h3>
-              <p className="text-xs text-gray-400 mb-2">{reward.description}</p>
-              <Button
-                size="sm"
-                className="w-full"
-                disabled={isCompleted}
-                style={{
-                  backgroundColor: isCompleted ? "#333" : config.group.theme.primary,
-                  color: "white",
-                }}
-                onClick={() => handleRedeem(reward)}
-              >
-                {isCompleted ? (
-                  <>
-                    <Check className="mr-1 h-3 w-3" />
-                    {reward.type === "vote" ? "Voté" : reward.type === "lottery" ? "Inscrit" : "Obtenu"}
-                  </>
-                ) : (
-                  <>
-                    <Coins className="mr-1 h-3 w-3" />
-                    {reward.cost}
-                  </>
-                )}
-              </Button>
-            </motion.div>
-          )
-        })}
+    return (
+      <motion.div
+        key={reward.id}
+        whileHover={{ scale: isAvailable ? 1.02 : 1 }}
+        whileTap={{ scale: isAvailable ? 0.98 : 1 }}
+        className={`rounded-lg bg-[#1a1f2c] p-3 text-center relative ${!isAvailable ? 'opacity-60' : ''}`}
+      >
+        {!isAvailable && (
+          <div className="absolute top-2 right-2 z-10">
+            <Lock className="h-4 w-4 text-gray-400" />
+          </div>
+        )}
+
+        <div className="relative mb-2">
+          <Image
+            src={reward.image || "/placeholder.svg"}
+            alt={reward.name}
+            width={200}
+            height={200}
+            className="h-24 w-full rounded object-cover"
+          />
+          <div className="absolute inset-0 flex items-center justify-center rounded bg-black/50">
+            <reward.icon className="h-8 w-8 text-white" />
+          </div>
+          {reward.type === "lottery" && (
+            <div className="absolute top-1 right-1 rounded bg-blue-500 px-1 py-0.5 text-xs text-white">
+              {reward.participants} participants
+            </div>
+          )}
+          {isCompleted && (
+            <div className="absolute top-1 left-1 rounded-full bg-green-500 p-1">
+              <Check className="h-3 w-3 text-white" />
+            </div>
+          )}
+        </div>
+        <h3 className="mb-1 text-sm font-semibold text-white">{reward.name}</h3>
+        <p className="text-xs text-gray-400 mb-2">{reward.description}</p>
+        <Button
+          size="sm"
+          className="w-full"
+          disabled={!isAvailable || isCompleted}
+          style={{
+            backgroundColor: !isAvailable ? "#444" : isCompleted ? "#333" : config.group.theme.primary,
+            color: "white",
+          }}
+          onClick={() => isAvailable && handleRedeem(reward)}
+        >
+          {!isAvailable ? (
+            <>
+              <Lock className="mr-1 h-3 w-3" />
+              Soon
+            </>
+          ) : isCompleted ? (
+            <>
+              <Check className="mr-1 h-3 w-3" />
+              {reward.type === "vote" ? "Voted" : reward.type === "lottery" ? "Entered" : "Claimed"}
+            </>
+          ) : (
+            <>
+              <Coins className="mr-1 h-3 w-3" />
+              {reward.cost}
+            </>
+          )}
+        </Button>
+      </motion.div>
+    )
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Available Rewards */}
+      <div className="space-y-4">
+        <h2 className="text-xl font-bold text-white">Available Rewards</h2>
+        <div className="grid grid-cols-2 gap-4">
+          {availableRewards.map((reward) => (
+            <RewardCard key={reward.id} reward={reward} isAvailable={true} />
+          ))}
+        </div>
+      </div>
+
+      {/* Unavailable Rewards */}
+      <div className="space-y-4">
+        <h2 className="text-xl font-bold text-white">Unavailable Rewards</h2>
+        <div className="grid grid-cols-2 gap-4">
+          {unavailableRewards.map((reward) => (
+            <RewardCard key={reward.id} reward={reward} isAvailable={false} />
+          ))}
+        </div>
       </div>
 
       {/* Vote Modal */}
@@ -231,7 +262,7 @@ export default function RewardsGrid() {
               <p className="text-white/80 text-sm mb-6">{selectedReward.description}</p>
 
               <div className="space-y-3 mb-6">
-                <p className="text-white font-semibold text-sm">Choisissez votre option :</p>
+                <p className="text-white font-semibold text-sm">Choose your option:</p>
                 {selectedReward.voteOptions.map((option, index) => (
                   <motion.button
                     key={option.id}
@@ -249,8 +280,12 @@ export default function RewardsGrid() {
                 ))}
               </div>
 
-              <Button onClick={closeAllModals} size="sm" className="bg-white/20 hover:bg-white/30">
-                Annuler
+              <Button
+                onClick={closeAllModals}
+                variant="ghost"
+                className="w-full text-white hover:bg-white/20 border border-white/30"
+              >
+                Cancel
               </Button>
             </motion.div>
           </motion.div>
@@ -267,61 +302,63 @@ export default function RewardsGrid() {
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
           >
             <motion.div
-              initial={{ scale: 0.8, rotateY: 90 }}
-              animate={{ scale: 1, rotateY: 0 }}
-              exit={{ scale: 0.8, rotateY: -90 }}
+              initial={{ scale: 0.8, y: 50 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.8, y: 50 }}
               transition={{ type: "spring", stiffness: 300, damping: 25 }}
               className="relative max-w-sm w-full mx-4 rounded-xl p-6 text-center"
               style={{
                 background: `linear-gradient(135deg, ${config.group.theme.primary} 0%, ${config.group.theme.secondary} 100%)`,
               }}
             >
-              <motion.div
-                animate={{
-                  rotate: [0, 10, -10, 0],
-                  scale: [1, 1.1, 1],
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Number.POSITIVE_INFINITY,
-                  repeatType: "reverse",
-                }}
-              >
-                <Ticket className="h-16 w-16 text-white mx-auto mb-4" />
+              <motion.div initial={{ rotate: -10 }} animate={{ rotate: 0 }} transition={{ delay: 0.2 }}>
+                <Ticket className="h-12 w-12 text-white mx-auto mb-4" />
               </motion.div>
 
               <h3 className="text-xl font-bold text-white mb-2">{selectedReward.name}</h3>
-              <p className="text-white/80 text-sm mb-4">{selectedReward.description}</p>
+              <p className="text-white/80 text-sm mb-6">{selectedReward.description}</p>
 
-              <div className="bg-white/20 rounded-lg p-4 mb-6 border border-white/10">
-                <div className="text-white font-semibold mb-2">🎁 Prix à gagner :</div>
-                <div className="text-white/90 text-sm mb-3">{selectedReward.prize}</div>
-
-                <div className="flex items-center justify-between text-white text-sm mb-2">
-                  <div className="flex items-center gap-1">
-                    <Users className="h-4 w-4" />
-                    <span>{selectedReward.participants} participants</span>
+              <div className="space-y-4 mb-6">
+                <div className="text-white">
+                  <div className="flex items-center justify-center gap-2 mb-2">
+                    <Gift className="h-5 w-5" />
+                    <span className="font-semibold">Prize:</span>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <Clock className="h-4 w-4" />
-                    <span>Fin: {selectedReward.endDate}</span>
-                  </div>
+                  <p className="text-sm text-white/90">{selectedReward.prize}</p>
                 </div>
-                <div className="text-xs text-white/70">
-                  🍀 Vos chances actuelles : {((1 / selectedReward.participants) * 100).toFixed(2)}%
+
+                <div className="text-white">
+                  <div className="flex items-center justify-center gap-2 mb-2">
+                    <Users className="h-5 w-5" />
+                    <span className="font-semibold">Participants:</span>
+                  </div>
+                  <p className="text-sm text-white/90">{selectedReward.participants}</p>
+                </div>
+
+                <div className="text-white">
+                  <div className="flex items-center justify-center gap-2 mb-2">
+                    <Clock className="h-5 w-5" />
+                    <span className="font-semibold">Ends:</span>
+                  </div>
+                  <p className="text-sm text-white/90">{selectedReward.endDate}</p>
                 </div>
               </div>
 
-              <div className="flex gap-3">
+              <div className="space-y-3">
                 <Button
                   onClick={handleLotteryJoin}
-                  className="flex-1 bg-white/20 hover:bg-white/30 border border-white/20"
+                  className="w-full bg-white/20 hover:bg-white/30 text-white border border-white/30"
                 >
-                  <Sparkles className="mr-2 h-4 w-4" />
-                  Participer ({selectedReward.cost} tokens)
+                  <Ticket className="mr-2 h-4 w-4" />
+                  Join Lottery ({selectedReward.cost} tokens)
                 </Button>
-                <Button onClick={closeAllModals} size="sm" className="bg-white/10 hover:bg-white/20">
-                  Annuler
+
+                <Button
+                  onClick={closeAllModals}
+                  variant="ghost"
+                  className="w-full text-white hover:bg-white/20 border border-white/30"
+                >
+                  Cancel
                 </Button>
               </div>
             </motion.div>
@@ -329,9 +366,9 @@ export default function RewardsGrid() {
         )}
       </AnimatePresence>
 
-      {/* Processing & Result Animation */}
+      {/* Processing Modal */}
       <AnimatePresence>
-        {(isProcessing || showResult) && selectedReward && (
+        {isProcessing && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -339,124 +376,70 @@ export default function RewardsGrid() {
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
           >
             <motion.div
-              initial={{ scale: 0.5, rotate: -180 }}
-              animate={{ scale: 1, rotate: 0 }}
-              exit={{ scale: 0.5, rotate: 180 }}
-              transition={{ type: "spring", stiffness: 300, damping: 20 }}
-              className="relative w-80 h-80 rounded-xl p-8 text-center flex flex-col items-center justify-center"
+              initial={{ scale: 0.8, y: 50 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.8, y: 50 }}
+              transition={{ type: "spring", stiffness: 300, damping: 25 }}
+              className="relative max-w-sm w-full mx-4 rounded-xl p-8 text-center"
               style={{
-                background: `radial-gradient(circle, ${config.group.theme.primary} 0%, ${config.group.theme.secondary} 100%)`,
+                background: `linear-gradient(135deg, ${config.group.theme.primary} 0%, ${config.group.theme.secondary} 100%)`,
               }}
             >
-              <AnimatePresence mode="wait">
-                {!showResult ? (
-                  <motion.div
-                    key="processing"
-                    exit={{ opacity: 0, scale: 0.8 }}
-                    className="flex flex-col items-center justify-center"
-                  >
-                    <motion.div
-                      animate={{
-                        scale: [1, 1.1, 1],
-                      }}
-                      transition={{
-                        scale: { duration: 1.5, repeat: Number.POSITIVE_INFINITY, repeatType: "reverse" },
-                      }}
-                    >
-                      {selectedReward.type === "vote" ? (
-                        <Vote className="h-20 w-20 text-white" />
-                      ) : selectedReward.type === "lottery" ? (
-                        <Ticket className="h-20 w-20 text-white" />
-                      ) : (
-                        <Gift className="h-20 w-20 text-white" />
-                      )}
-                    </motion.div>
-                    <motion.p
-                      className="mt-6 font-bold text-white text-lg"
-                      animate={{ opacity: [0.5, 1, 0.5] }}
-                      transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY }}
-                    >
-                      {selectedReward.type === "vote"
-                        ? "Enregistrement du vote..."
-                        : selectedReward.type === "lottery"
-                          ? "Inscription en cours..."
-                          : "Traitement en cours..."}
-                    </motion.p>
-                    <div className="flex gap-1 mt-4">
-                      {[0, 1, 2].map((i) => (
-                        <motion.div
-                          key={i}
-                          className="w-2 h-2 bg-white rounded-full"
-                          animate={{
-                            scale: [1, 1.5, 1],
-                            opacity: [0.5, 1, 0.5],
-                          }}
-                          transition={{
-                            duration: 1,
-                            repeat: Number.POSITIVE_INFINITY,
-                            delay: i * 0.2,
-                          }}
-                        />
-                      ))}
-                    </div>
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="result"
-                    initial={{ opacity: 0, scale: 0.5, y: 50 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                    className="flex flex-col items-center justify-center"
-                  >
-                    <motion.div
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{ delay: 0.2, type: "spring", stiffness: 500 }}
-                    >
-                      <Check className="h-20 w-20 text-green-300" />
-                    </motion.div>
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                className="mb-4"
+              >
+                <Sparkles className="h-12 w-12 text-white mx-auto" />
+              </motion.div>
 
-                    <motion.p
-                      className="mt-4 font-bold text-white text-xl"
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.4 }}
-                    >
-                      {selectedReward.type === "vote"
-                        ? "Vote enregistré !"
-                        : selectedReward.type === "lottery"
-                          ? "Inscription réussie !"
-                          : "Félicitations !"}
-                    </motion.p>
+              <h3 className="text-xl font-bold text-white mb-2">Processing...</h3>
+              <p className="text-white/80 text-sm">Please wait while we process your reward</p>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-                    <motion.p
-                      className="text-sm text-white/90 mt-3 px-4 text-center leading-relaxed"
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.6 }}
-                    >
-                      {selectedReward.type === "vote"
-                        ? `Votre vote pour "${selectedVote?.name}" a été pris en compte. Merci pour votre participation !`
-                        : selectedReward.type === "lottery"
-                          ? "Vous participez maintenant à la loterie ! Le tirage aura lieu bientôt. Bonne chance ! 🍀"
-                          : "Vous avez obtenu la récompense ! Vérifiez votre inventaire."}
-                    </motion.p>
+      {/* Result Modal */}
+      <AnimatePresence>
+        {showResult && selectedReward && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
+          >
+            <motion.div
+              initial={{ scale: 0.8, y: 50 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.8, y: 50 }}
+              transition={{ type: "spring", stiffness: 300, damping: 25 }}
+              className="relative max-w-sm w-full mx-4 rounded-xl p-8 text-center"
+              style={{
+                background: `linear-gradient(135deg, ${config.group.theme.primary} 0%, ${config.group.theme.secondary} 100%)`,
+              }}
+            >
+              <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2 }}>
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-white/20">
+                  <Check className="h-8 w-8 text-white" />
+                </div>
+              </motion.div>
 
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: 0.8 }}
-                    >
-                      <Button
-                        onClick={closeAllModals}
-                        className="mt-6 bg-white/20 hover:bg-white/30 border border-white/20"
-                      >
-                        Parfait ! ✨
-                      </Button>
-                    </motion.div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              <h3 className="text-xl font-bold text-white mb-2">Success!</h3>
+              <p className="text-white/80 text-sm mb-6">
+                {selectedReward.type === "vote" && selectedVote
+                  ? `You voted for "${selectedVote.name}"`
+                  : selectedReward.type === "lottery"
+                  ? `You entered the lottery for "${selectedReward.name}"`
+                  : `You claimed "${selectedReward.name}"`}
+              </p>
+
+              <Button
+                onClick={closeAllModals}
+                className="w-full bg-white/20 hover:bg-white/30 text-white border border-white/30"
+              >
+                Great!
+              </Button>
             </motion.div>
           </motion.div>
         )}

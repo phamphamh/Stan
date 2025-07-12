@@ -16,19 +16,11 @@ export default function WeeklyLeaderboardHome() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-white">🏆 Podium de cette semaine</h2>
-        <Link
-          href="/leaderboard"
-          className="flex items-center gap-1 text-sm"
-          style={{ color: config.group.theme.primary }}
-        >
-          <span>Voir tout</span>
-          <ChevronRight className="h-4 w-4" />
-        </Link>
+        <h2 className="text-xl font-bold text-white">🏆 Weekly Podium</h2>
       </div>
 
       <div className="rounded-lg bg-[#1a1f2c] p-4">
-        <p className="text-xs text-gray-400 mb-4">Classement basé sur les tokens gagnés via les missions</p>
+        <p className="text-xs text-gray-400 mb-4">Ranking based on tokens earned via missions</p>
 
         {/* Podium */}
         <div className="grid grid-cols-3 gap-2 mb-4">

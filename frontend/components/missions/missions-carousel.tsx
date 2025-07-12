@@ -8,8 +8,8 @@ import { Button } from "@/components/ui/button"
 const missions = [
   {
     id: "spotify",
-    title: "Écouter sur Spotify",
-    description: "Stream 5 chansons ARTMS",
+    title: "Listen on Spotify",
+    description: "Stream 5 ARTMS songs",
     icon: Music,
     reward: "50 XP",
     progress: 3,
@@ -18,8 +18,8 @@ const missions = [
   },
   {
     id: "clipfarm",
-    title: "Regarder des clips",
-    description: "Visionner 10 clips musicaux",
+    title: "Watch clips",
+    description: "Watch 10 music videos",
     icon: Video,
     reward: "75 XP",
     progress: 7,
@@ -28,8 +28,8 @@ const missions = [
   },
   {
     id: "stream",
-    title: "Stream en direct",
-    description: "Participer à 3 lives",
+    title: "Live stream",
+    description: "Join 3 live streams",
     icon: Play,
     reward: "100 XP",
     progress: 1,
@@ -38,8 +38,8 @@ const missions = [
   },
   {
     id: "buy",
-    title: "Acheter des objets",
-    description: "Acheter 2 objets dans le shop",
+    title: "Buy items",
+    description: "Purchase 2 items from the shop",
     icon: ShoppingCart,
     reward: "200 XP",
     progress: 0,
@@ -48,8 +48,8 @@ const missions = [
   },
   {
     id: "like",
-    title: "Liker du contenu",
-    description: "Liker 20 posts",
+    title: "Like content",
+    description: "Like 20 posts",
     icon: Heart,
     reward: "25 XP",
     progress: 15,
@@ -58,8 +58,8 @@ const missions = [
   },
   {
     id: "social",
-    title: "Inviter des amis",
-    description: "Inviter 3 nouveaux fans",
+    title: "Invite friends",
+    description: "Invite 3 new fans",
     icon: Users,
     reward: "300 XP",
     progress: 1,
@@ -98,7 +98,7 @@ export default function MissionsCarousel() {
 
               <div className="mt-4">
                 <div className="mb-2 flex justify-between text-sm">
-                  <span>Progression</span>
+                  <span>Progress</span>
                   <span>
                     {mission.progress}/{mission.maxProgress}
                   </span>
@@ -114,7 +114,7 @@ export default function MissionsCarousel() {
               </div>
 
               <Button className="mt-4 w-full bg-white/20 text-white hover:bg-white/30" disabled={isCompleted}>
-                {isCompleted ? "Terminé ✓" : "Continuer"}
+                {isCompleted ? "Completed ✓" : "Continue"}
               </Button>
             </motion.div>
           )

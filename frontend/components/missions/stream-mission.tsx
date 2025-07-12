@@ -5,7 +5,7 @@ import { config } from "@/lib/config"
 const streamMissions = [
   {
     id: 1,
-    title: "Stream 'Pink Venom' 10 fois",
+    title: "Stream 'Pink Venom' 10 times",
     platform: "Spotify",
     icon: Headphones,
     progress: 7,
@@ -14,7 +14,7 @@ const streamMissions = [
   },
   {
     id: 2,
-    title: "Regarder le MV 'DDU-DU DDU-DU'",
+    title: "Watch 'DDU-DU DDU-DU' MV",
     platform: "YouTube",
     icon: Play,
     progress: 1,
@@ -23,7 +23,7 @@ const streamMissions = [
   },
   {
     id: 3,
-    title: "Écouter l'album 'THE ALBUM'",
+    title: "Listen to 'THE ALBUM'",
     platform: "Apple Music",
     icon: Headphones,
     progress: 0,
@@ -35,8 +35,8 @@ const streamMissions = [
 export default function StreamMission() {
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-bold text-white">Missions de Stream</h2>
-      <p className="text-gray-400">Gagnez des tokens en écoutant et regardant BLACKPINK.</p>
+      <h2 className="text-xl font-bold text-white">Stream Missions</h2>
+      <p className="text-gray-400">Earn tokens by listening to and watching BLACKPINK.</p>
       <div className="space-y-3">
         {streamMissions.map((mission) => {
           const isCompleted = mission.progress >= mission.goal
@@ -48,7 +48,7 @@ export default function StreamMission() {
                   <mission.icon className="h-6 w-6" style={{ color: config.group.theme.primary }} />
                   <div>
                     <h3 className="font-semibold text-white">{mission.title}</h3>
-                    <p className="text-xs text-gray-400">sur {mission.platform}</p>
+                    <p className="text-xs text-gray-400">on {mission.platform}</p>
                   </div>
                 </div>
                 <span className="text-sm font-bold" style={{ color: config.group.theme.primary }}>
@@ -57,7 +57,7 @@ export default function StreamMission() {
               </div>
               <div className="mt-3">
                 <div className="flex justify-between text-xs text-gray-400 mb-1">
-                  <span>Progression</span>
+                  <span>Progress</span>
                   <span>
                     {mission.progress} / {mission.goal}
                   </span>
@@ -83,10 +83,10 @@ export default function StreamMission() {
                 {isCompleted ? (
                   <>
                     <CheckCircle className="mr-2 h-4 w-4" />
-                    Terminé
+                    Completed
                   </>
                 ) : (
-                  "Commencer"
+                  "Start"
                 )}
               </Button>
             </div>
