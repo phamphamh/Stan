@@ -1,6 +1,6 @@
 "use client"
 
-import { Play, Heart, MessageCircle, Share, Youtube, Music2, TrendingUp, Eye } from "lucide-react"
+import { Play, Heart, MessageCircle, Share, Youtube, Music2, TrendingUp, Eye, Clock } from "lucide-react"
 import Image from "next/image"
 import { motion } from "framer-motion"
 import { config } from "@/lib/config"
@@ -165,7 +165,13 @@ export default function MyClips() {
                   <TrendingUp className="h-3 w-3" />
                   <span className="text-xs font-semibold">+{clip.tokensEarned} tokens</span>
                 </div>
-                <button className="text-xs text-gray-400 hover:text-white">Voir détails</button>
+                <button
+                  className="text-xs text-gray-500 cursor-not-allowed flex items-center gap-1"
+                  disabled
+                >
+                  <Clock className="h-3 w-3" />
+                  Soon
+                </button>
               </div>
             </div>
           </motion.div>

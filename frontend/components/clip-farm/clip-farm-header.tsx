@@ -1,12 +1,12 @@
 "use client"
 
-import { Youtube, Music2, LinkIcon, Plus } from "lucide-react"
+import { Youtube, Music2, LinkIcon, Plus, Clock } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
 
 export default function ClipFarmHeader() {
   const [isYouTubeLinked, setIsYouTubeLinked] = useState(false)
-  const [isTikTokLinked, setIsTikTokLinked] = useState(true) // Simulé comme déjà lié
+  const [isTikTokLinked, setIsTikTokLinked] = useState(false) // Changé à false pour montrer "Soon"
 
   return (
     <div className="space-y-4">
@@ -22,26 +22,16 @@ export default function ClipFarmHeader() {
             </div>
             <div>
               <p className="font-semibold text-white">YouTube</p>
-              <p className="text-xs text-gray-400">{isYouTubeLinked ? "@EditMaster2024" : "Non lié"}</p>
+              <p className="text-xs text-gray-400">Non lié</p>
             </div>
           </div>
           <Button
             size="sm"
-            variant={isYouTubeLinked ? "outline" : "default"}
-            onClick={() => setIsYouTubeLinked(!isYouTubeLinked)}
-            className={isYouTubeLinked ? "text-gray-400" : ""}
+            disabled
+            className="text-gray-500 bg-gray-700 cursor-not-allowed"
           >
-            {isYouTubeLinked ? (
-              <>
-                <LinkIcon className="mr-1 h-3 w-3" />
-                Lié
-              </>
-            ) : (
-              <>
-                <Plus className="mr-1 h-3 w-3" />
-                Lier
-              </>
-            )}
+            <Clock className="mr-1 h-3 w-3" />
+            Soon
           </Button>
         </div>
 
@@ -53,38 +43,26 @@ export default function ClipFarmHeader() {
             </div>
             <div>
               <p className="font-semibold text-white">TikTok</p>
-              <p className="text-xs text-gray-400">{isTikTokLinked ? "@kpop_edits_master" : "Non lié"}</p>
+              <p className="text-xs text-gray-400">Non lié</p>
             </div>
           </div>
           <Button
             size="sm"
-            variant={isTikTokLinked ? "outline" : "default"}
-            onClick={() => setIsTikTokLinked(!isTikTokLinked)}
-            className={isTikTokLinked ? "text-gray-400" : ""}
+            disabled
+            className="text-gray-500 bg-gray-700 cursor-not-allowed"
           >
-            {isTikTokLinked ? (
-              <>
-                <LinkIcon className="mr-1 h-3 w-3" />
-                Lié
-              </>
-            ) : (
-              <>
-                <Plus className="mr-1 h-3 w-3" />
-                Lier
-              </>
-            )}
+            <Clock className="mr-1 h-3 w-3" />
+            Soon
           </Button>
         </div>
       </div>
 
       {/* Message d'information */}
-      {(!isYouTubeLinked || !isTikTokLinked) && (
-        <div className="rounded-lg bg-blue-500/10 border border-blue-500/20 p-3">
-          <p className="text-sm text-blue-400">
-            💡 Liez vos comptes pour participer automatiquement aux défis et gagner des tokens !
-          </p>
-        </div>
-      )}
+      <div className="rounded-lg bg-blue-500/10 border border-blue-500/20 p-3">
+        <p className="text-sm text-blue-400">
+          💡 Les fonctionnalités de liaison de comptes seront bientôt disponibles !
+        </p>
+      </div>
     </div>
   )
 }

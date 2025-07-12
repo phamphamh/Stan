@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { motion, AnimatePresence } from "framer-motion"
 import { config } from "@/lib/config"
 import Link from "next/link"
+import { useTokens } from "@/lib/tokens-context"
 
 interface ProfileModalProps {
   isOpen: boolean
@@ -13,8 +14,8 @@ interface ProfileModalProps {
 }
 
 export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
-  const { group, user } = config
-  const userBio = "BLINK depuis 2016 💖 Stan BLACKPINK forever"
+  const { tokens, level, earnedBadges } = useTokens()
+  const userBio = "BLACKPINK forever 💖 Stan since 2016"
 
   return (
     <AnimatePresence>
@@ -38,83 +39,86 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
           >
             {/* Header */}
             <div className="flex items-center justify-between border-b border-gray-800 p-4 sticky top-0 bg-[#0a0f1b]/80 backdrop-blur-sm">
-              <h2 className="text-lg font-bold text-white">Mon Profil</h2>
+              <h2 className="text-lg font-bold text-white">Profile</h2>
               <button onClick={onClose} className="rounded-full p-1 text-gray-400 hover:bg-gray-800 hover:text-white">
                 <X className="h-5 w-5" />
               </button>
             </div>
 
             {/* Content */}
-            <div className="p-4 space-y-6">
-              {/* Profile Info */}
-              <div className="text-center">
-                <Image
-                  src="/placeholder.svg?height=80&width=80&text=User"
-                  alt="Profile"
-                  width={80}
-                  height={80}
-                  className="mx-auto rounded-full"
-                />
-                <h2 className="mt-3 text-xl font-bold text-white">{user.name}</h2>
-                <p className="text-gray-400">
-                  Niveau {user.level} • {group.displayName} Stan
-                </p>
-              </div>
-
-              {/* Bio */}
-              <div className="text-center">
-                <p className="text-sm text-gray-300 leading-relaxed">{userBio}</p>
-              </div>
-
-              {/* Stats personnelles */}
-              <div className="grid grid-cols-3 gap-4 text-center">
+            <div className="p-6 space-y-6">
+              {/* Profile Section */}
+              <div className="text-center space-y-4">
+                <div className="relative inline-block">
+                  <Image
+                    src="/placeholder.svg?height=80&width=80&text=User&bg=e91e63&color=white"
+                    alt="Profile"
+                    width={80}
+                    height={80}
+                    className="rounded-full mx-auto border-4 border-pink-500"
+                  />
+                  <div
+                    className="absolute -bottom-1 -right-1 h-4 w-4 rounded-full border-2 border-[#0a0f1b]"
+                    style={{ backgroundColor: config.group.theme.primary }}
+                  />
+                </div>
                 <div>
-                  <div className="flex items-center justify-center gap-1 text-yellow-400">
+                  <h3 className="text-xl font-bold text-white">BLINK_Fan_01</h3>
+                  <p className="text-gray-400">Level {level} • BLACKPINK Stan</p>
+                </div>
+                <p className="text-sm text-gray-300">{userBio}</p>
+              </div>
+
+              {/* Stats */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-[#1a1f2c] rounded-lg p-4 text-center">
+                  <div className="flex items-center justify-center gap-1 mb-2" style={{ color: config.group.theme.primary }}>
                     <Award className="h-5 w-5" />
-                    <span className="text-xl font-bold">{user.level}</span>
+                    <span className="text-xl font-bold">{level}</span>
                   </div>
-                  <p className="text-sm text-gray-400">Niveau</p>
+                  <p className="text-sm text-gray-400">Level</p>
                 </div>
-                <div>
-                  <div className="flex items-center justify-center gap-1 text-orange-400">
-                    <Calendar className="h-5 w-5" />
-                    <span className="text-xl font-bold">127</span>
-                  </div>
-                  <p className="text-sm text-gray-400">Jours actifs</p>
-                </div>
-                <div>
-                  <div className="flex items-center justify-center gap-1" style={{ color: group.theme.primary }}>
+                <div className="bg-[#1a1f2c] rounded-lg p-4 text-center">
+                  <div className="flex items-center justify-center gap-1 mb-2" style={{ color: config.group.theme.primary }}>
                     <Coins className="h-5 w-5" />
-                    <span className="text-xl font-bold">{user.tokens.toFixed(0)}</span>
+                    <span className="text-xl font-bold">{tokens}</span>
                   </div>
-                  <p className="text-sm text-gray-400">Tokens gagnés</p>
+                  <p className="text-sm text-gray-400">Tokens Earned</p>
                 </div>
               </div>
 
-              {/* Badges et achievements */}
-              <div className="rounded-lg bg-[#1a1f2c] p-4">
-                <h3 className="mb-3 text-lg font-semibold text-white">Badges récents</h3>
-                <div className="flex gap-3">
-                  <div className="flex flex-col items-center gap-1">
-                    <div
-                      className="flex h-12 w-12 items-center justify-center rounded-full"
-                      style={{ backgroundColor: group.theme.primary + "30" }}
-                    >
-                      <Coins className="h-6 w-6" style={{ color: group.theme.primary }} />
-                    </div>
-                    <span className="text-xs text-gray-400">BLINK #1</span>
+              {/* Badges */}
+              <div className="bg-[#1a1f2c] rounded-lg p-4">
+                <h4 className="text-sm font-semibold text-white mb-3">Recent Badges</h4>
+                {earnedBadges.length > 0 ? (
+                  <div className="grid grid-cols-3 gap-3">
+                    {earnedBadges.slice(0, 3).map((badge, index) => (
+                      <div key={index} className="flex flex-col items-center gap-1">
+                        <div
+                          className="flex h-10 w-10 items-center justify-center rounded-full border"
+                          style={{
+                            backgroundColor: badge.color + "20",
+                            borderColor: badge.color
+                          }}
+                        >
+                          <badge.icon className="h-5 w-5" style={{ color: badge.color }} />
+                        </div>
+                        <span className="text-xs text-center text-gray-400">{badge.name}</span>
+                      </div>
+                    ))}
                   </div>
-                  <div className="flex flex-col items-center gap-1">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-yellow-500/30">
-                      <Award className="h-6 w-6 text-yellow-400" />
-                    </div>
-                    <span className="text-xs text-gray-400">Top Streamer</span>
-                  </div>
-                  <div className="flex flex-col items-center gap-1">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-purple-500/30">
-                      <Calendar className="h-6 w-6 text-purple-400" />
-                    </div>
-                    <span className="text-xs text-gray-400">Fidèle</span>
+                ) : (
+                  <p className="text-sm text-gray-400">No badges earned yet</p>
+                )}
+              </div>
+
+              {/* Member Since */}
+              <div className="bg-[#1a1f2c] rounded-lg p-4">
+                <div className="flex items-center gap-3">
+                  <Calendar className="h-5 w-5 text-gray-400" />
+                  <div>
+                    <p className="text-sm font-semibold text-white">Member Since</p>
+                    <p className="text-xs text-gray-400">March 2022</p>
                   </div>
                 </div>
               </div>
@@ -124,21 +128,9 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                 <Link href="/profile/edit" onClick={onClose}>
                   <Button className="w-full justify-start gap-3 bg-[#1a1f2c] text-white hover:bg-[#252b3a]">
                     <Edit className="h-4 w-4" />
-                    Modifier le profil
+                    Edit Profile
                   </Button>
                 </Link>
-                <Button className="w-full justify-start gap-3 bg-[#1a1f2c] text-white hover:bg-[#252b3a]">
-                  <Share className="h-4 w-4" />
-                  Partager le profil
-                </Button>
-                <Button className="w-full justify-start gap-3 bg-[#1a1f2c] text-white hover:bg-[#252b3a]">
-                  <Settings className="h-4 w-4" />
-                  Paramètres
-                </Button>
-                <Button className="w-full justify-start gap-3 bg-red-600/20 text-red-400 hover:bg-red-600/30">
-                  <LogOut className="h-4 w-4" />
-                  Se déconnecter
-                </Button>
               </div>
             </div>
           </motion.div>

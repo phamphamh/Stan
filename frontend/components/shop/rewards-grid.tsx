@@ -82,7 +82,7 @@ const unavailableRewards = [
 ]
 
 export default function RewardsGrid() {
-  const { tokens, addTokens, transactions, setTransactions } = useTokens()
+  const { tokens, addTokens, addTransaction } = useTokens()
   const [selectedReward, setSelectedReward] = useState(null)
   const [isProcessing, setIsProcessing] = useState(false)
   const [showResult, setShowResult] = useState(false)
@@ -98,14 +98,12 @@ export default function RewardsGrid() {
       addTokens(-reward.cost)
 
       // Add transaction
-      const newTransaction = {
-        id: Date.now().toString(),
+      addTransaction({
         type: "Purchase",
         amount: -reward.cost,
         description: `Purchased: ${reward.name}`,
         timestamp: new Date(),
-      }
-      setTransactions(prev => [newTransaction, ...prev])
+      })
 
       setTimeout(() => {
         setIsProcessing(false)

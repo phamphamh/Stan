@@ -5,6 +5,14 @@ import Image from "next/image"
 import { Play, Heart, MessageCircle, Share, MoreHorizontal } from "lucide-react"
 import { motion } from "framer-motion"
 
+// Mock avatars pour le feed
+const mockAvatars = [
+  "/placeholder.svg?height=32&width=32&text=BP&bg=e91e63&color=white",
+  "/placeholder.svg?height=32&width=32&text=YG&bg=000000&color=white",
+  "/placeholder.svg?height=32&width=32&text=🖤&bg=ff69b4&color=white",
+  "/placeholder.svg?height=32&width=32&text=💗&bg=000000&color=white",
+]
+
 const blackpinkNews = [
   {
     id: "1",
@@ -15,7 +23,7 @@ const blackpinkNews = [
     likes: 45000,
     comments: 2890,
     username: "officialbp",
-    userAvatar: "/placeholder.svg?height=32&width=32&text=BP",
+    userAvatar: mockAvatars[0],
     timestamp: "2 hours ago",
   },
   {
@@ -27,7 +35,7 @@ const blackpinkNews = [
     likes: 52000,
     comments: 3450,
     username: "officialbp",
-    userAvatar: "/placeholder.svg?height=32&width=32&text=BP",
+    userAvatar: mockAvatars[1],
     timestamp: "1 day ago",
   },
   {
@@ -39,7 +47,7 @@ const blackpinkNews = [
     likes: 38000,
     comments: 1890,
     username: "officialbp",
-    userAvatar: "/placeholder.svg?height=32&width=32&text=BP",
+    userAvatar: mockAvatars[2],
     timestamp: "3 days ago",
   },
   {
@@ -51,7 +59,7 @@ const blackpinkNews = [
     likes: 41000,
     comments: 2150,
     username: "officialbp",
-    userAvatar: "/placeholder.svg?height=32&width=32&text=BP",
+    userAvatar: mockAvatars[3],
     timestamp: "5 days ago",
   },
 ]
@@ -77,13 +85,16 @@ export default function NewsGrid() {
             {/* Instagram-style header */}
             <div className="flex items-center justify-between p-4 pb-3">
               <div className="flex items-center gap-3">
-                <Image
-                  src={item.userAvatar || "/placeholder.svg"}
-                  alt={item.username}
-                  width={32}
-                  height={32}
-                  className="rounded-full"
-                />
+                <div className="relative">
+                  <Image
+                    src={item.userAvatar}
+                    alt={item.username}
+                    width={32}
+                    height={32}
+                    className="rounded-full border-2 border-pink-500"
+                  />
+                  <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-[#1a1f2c]"></div>
+                </div>
                 <div>
                   <h3 className="text-white font-semibold text-sm">{item.username}</h3>
                   <p className="text-gray-400 text-xs">{item.timestamp}</p>
@@ -116,13 +127,13 @@ export default function NewsGrid() {
             {/* Instagram-style actions */}
             <div className="p-4">
               <div className="flex items-center gap-4 mb-3">
-                <Heart className="h-6 w-6 text-white" />
-                <MessageCircle className="h-6 w-6 text-white" />
-                <Share className="h-6 w-6 text-white" />
+                <Heart className="h-6 w-6 text-white hover:text-red-500 cursor-pointer transition-colors" />
+                <MessageCircle className="h-6 w-6 text-white hover:text-blue-500 cursor-pointer transition-colors" />
+                <Share className="h-6 w-6 text-white hover:text-green-500 cursor-pointer transition-colors" />
               </div>
 
               <div className="mb-2">
-                <span className="text-white font-semibold text-sm">{item.likes} likes</span>
+                <span className="text-white font-semibold text-sm">{item.likes.toLocaleString()} likes</span>
               </div>
 
               <div className="mb-2">
@@ -130,8 +141,8 @@ export default function NewsGrid() {
                 <span className="text-white text-sm ml-2">{item.description}</span>
               </div>
 
-              <div className="text-gray-400 text-sm">
-                View all {item.comments} comments
+              <div className="text-gray-400 text-sm cursor-pointer hover:text-gray-300">
+                View all {item.comments.toLocaleString()} comments
               </div>
             </div>
           </motion.div>
