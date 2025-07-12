@@ -2,10 +2,10 @@ import { createConfig, http } from 'wagmi'
 import { chiliz } from 'wagmi/chains'
 import { injected, walletConnect } from 'wagmi/connectors'
 
-// Configuration de la chaîne Chiliz
-const chilizChain = {
-  id: 88882,
-  name: 'Chiliz Spicy Testnet',
+// Configuration de la chaîne Chiliz Mainnet
+const chilizMainnet = {
+  id: 88888,
+  name: 'Chiliz Chain',
   nativeCurrency: {
     decimals: 18,
     name: 'CHZ',
@@ -13,25 +13,25 @@ const chilizChain = {
   },
   rpcUrls: {
     default: {
-      http: ['https://spicy-rpc.chiliz.com'],
+      http: ['https://rpc.chiliz.com'],
     },
   },
   blockExplorers: {
     default: {
       name: 'Chiliz Explorer',
-      url: 'https://spicy-explorer.chiliz.com',
+      url: 'https://scan.chiliz.com',
     },
   },
-  testnet: true,
+  testnet: false,
 }
 
 export const wagmiConfig = createConfig({
-  chains: [chilizChain],
+  chains: [chilizMainnet],
   connectors: [
     injected(),
   ],
   transports: {
-    [chilizChain.id]: http('https://spicy-rpc.chiliz.com'),
+    [chilizMainnet.id]: http('https://rpc.chiliz.com'),
   },
 })
 

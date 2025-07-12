@@ -9,14 +9,16 @@ import ClipFarmMission from "@/components/missions/clip-farm-mission"
 import StreamMission from "@/components/missions/stream-mission"
 import ShopMission from "@/components/missions/shop-mission"
 import ActiveMissions from "@/components/missions/active-missions"
+import { BlockchainMissions } from "@/components/missions/blockchain-missions"
 
 export default function MissionsPage() {
-  const [activeTab, setActiveTab] = useState("Active Missions")
+  const [activeTab, setActiveTab] = useState("Blockchain")
 
   return (
     <AppShell topNav={<TopNav />} bottomNav={<BottomNav activeTab="Missions" />}>
-      <TabBar tabs={["Active Missions", "Content", "Stream", "Shop", "Live (Soon)"]} onTabChange={setActiveTab} />
+      <TabBar tabs={["Blockchain", "Active Missions", "Content", "Stream", "Shop", "Live (Soon)"]} onTabChange={setActiveTab} />
       <div className="flex-1 overflow-y-auto p-4">
+        {activeTab === "Blockchain" && <BlockchainMissions />}
         {activeTab === "Active Missions" && <ActiveMissions />}
         {activeTab === "Content" && <ClipFarmMission />}
         {activeTab === "Stream" && <StreamMission />}

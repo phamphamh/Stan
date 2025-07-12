@@ -131,3 +131,26 @@ h6 {
 .font-light {
   font-weight: 300;
 }
+
+/* Force mobile-first responsive design */
+@media (min-width: 768px) {
+  /* Force mobile layout on desktop */
+  body {
+    max-width: 430px;
+    margin: 0 auto;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Ensure mobile viewport behavior */
+  html {
+    overflow-x: hidden;
+  }
+
+  /* Center the mobile app on desktop */
+  #__next {
+    max-width: 430px;
+    margin: 0 auto;
+    min-height: 100vh;
+  }
+}

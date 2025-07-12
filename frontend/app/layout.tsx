@@ -5,6 +5,8 @@ import "./globals.css"
 import { cn } from "@/lib/utils"
 import { TokensProvider } from "@/lib/tokens-context"
 import { Web3Provider } from "@/components/providers/web3-provider"
+import { BlockchainProvider } from "@/lib/blockchain-context"
+import { Toaster } from "sonner"
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -33,9 +35,23 @@ export default function RootLayout({
         )}
       >
         <Web3Provider>
-          <TokensProvider>
-            {children}
-          </TokensProvider>
+          <BlockchainProvider>
+            <TokensProvider>
+              {children}
+              <Toaster
+                position="top-center"
+                richColors
+                theme="dark"
+                toastOptions={{
+                  style: {
+                    background: '#1a1f2c',
+                    border: '1px solid #374151',
+                    color: '#f3f4f6',
+                  },
+                }}
+              />
+            </TokensProvider>
+          </BlockchainProvider>
         </Web3Provider>
       </body>
     </html>

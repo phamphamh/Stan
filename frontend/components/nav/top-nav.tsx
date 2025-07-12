@@ -1,6 +1,6 @@
 "use client"
 
-import { Coins } from "lucide-react"
+import { Coins, Menu, X } from "lucide-react"
 import { useState } from "react"
 import ProfileModal from "@/components/modals/profile-modal"
 import Image from "next/image"
@@ -22,7 +22,7 @@ export default function TopNav() {
             </h1>
           </Link>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center space-x-4">
           {/* Token Balance - Clickable */}
           <Link href="/wallet">
             <div
@@ -36,6 +36,8 @@ export default function TopNav() {
               <span>{tokens}</span>
             </div>
           </Link>
+
+
 
           {/* Profile Button */}
           <button onClick={() => setShowProfile(true)} aria-label="Profile" className="relative">

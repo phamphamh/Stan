@@ -6,18 +6,21 @@ import EventCard from "@/components/home/event-card"
 import NewsGrid from "@/components/home/news-grid"
 import WeeklyLeaderboardHome from "@/components/home/weekly-leaderboard-home"
 import AboutUs from "@/components/home/about-us"
+import { OnboardingGuard } from "@/components/onboarding/onboarding-guard"
 
 export default function HomePage() {
   return (
-    <AppShell topNav={<TopNav />} bottomNav={<BottomNav activeTab="Home" />}>
-      <div className="flex-1 space-y-4 scrollable px-4 pb-4">
-        <NewsCarousel />
-        <EventCard />
-        <NewsGrid />
-        <WeeklyLeaderboardHome />
-        <AboutUs />
-        <div className="h-16" />
-      </div>
-    </AppShell>
+    <OnboardingGuard>
+      <AppShell topNav={<TopNav />} bottomNav={<BottomNav activeTab="Home" />}>
+        <div className="flex-1 space-y-4 scrollable px-4 pb-4">
+          <NewsCarousel />
+          <EventCard />
+          <NewsGrid />
+          <WeeklyLeaderboardHome />
+          <AboutUs />
+          <div className="h-16" />
+        </div>
+      </AppShell>
+    </OnboardingGuard>
   )
 }
