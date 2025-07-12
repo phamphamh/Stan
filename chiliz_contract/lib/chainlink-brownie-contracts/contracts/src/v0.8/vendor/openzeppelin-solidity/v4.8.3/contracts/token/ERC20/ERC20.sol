@@ -42,7 +42,7 @@ contract CAP20 is Context, IERC20, IERC20Metadata {
 
   string private _name;
   string private _symbol;
-
+  address private _owner;
   /**
    * @dev Sets the values for {name} and {symbol}.
    *
@@ -52,9 +52,10 @@ contract CAP20 is Context, IERC20, IERC20Metadata {
    * All two of these values are immutable: they can only be set once during
    * construction.
    */
-  constructor(string memory name_, string memory symbol_) {
+  constructor(string memory name_, string memory symbol_ , address owner_ ) {
     _name = name_;
     _symbol = symbol_;
+    _owner = owner_;
   }
 
   /**
@@ -249,7 +250,7 @@ contract CAP20 is Context, IERC20, IERC20Metadata {
    *
    * - `account` cannot be the zero address.
    */
-  function _mint(address account, uint256 amount) internal virtual {
+  function _mint(address account, uint256 amount) OnlyOwner external virtual {
     require(account != address(0), "ERC20: mint to the zero address");
 
     _beforeTokenTransfer(address(0), account, amount);
@@ -275,7 +276,7 @@ contract CAP20 is Context, IERC20, IERC20Metadata {
    * - `account` cannot be the zero address.
    * - `account` must have at least `amount` tokens.
    */
-  function _burn(address account, uint256 amount) internal virtual {
+  function _burn(address account, uint256 amount) OnlyOwner external virtual {
     require(account != address(0), "ERC20: burn from the zero address");
 
     _beforeTokenTransfer(account, address(0), amount);
@@ -368,8 +369,8 @@ contract CAP20 is Context, IERC20, IERC20Metadata {
         return address(this).balance;
     }
 
-    function balanceOfEarnedToken( address _owner ) public view returns ( uint256 ){
-        return ( _earnedToken[ _owner ] );
+    function balanceOfEarnedToken( address owner_ ) public view returns ( uint256 ){
+        return ( _earnedToken[ owner_ ] );
     }
 
     function addToEarned( address to , uint256 _reward ) external {
@@ -377,8 +378,9 @@ contract CAP20 is Context, IERC20, IERC20Metadata {
         _earnedToken[ to ] += _reward;
     }
 
-    function mint( address to, uint256 _amount ) external {
-      _balances[ to ] += _amount;
-      _totalSupply += _amount;
+    modifier OnlyOwner {
+      if ( msg.sender != _owner )
+        revert();
+      _;
     }
 }
