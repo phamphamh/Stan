@@ -13,7 +13,7 @@ const chilizMainnet = {
   },
   rpcUrls: {
     default: {
-      http: ['https://rpc.chiliz.com'],
+      http: ['https://rpc.ankr.com/chiliz'],
     },
   },
   blockExplorers: {
@@ -31,7 +31,7 @@ export const wagmiConfig = createConfig({
     injected(),
   ],
   transports: {
-    [chilizMainnet.id]: http('https://rpc.chiliz.com'),
+    [chilizMainnet.id]: http('https://rpc.ankr.com/chiliz'),
   },
 })
 

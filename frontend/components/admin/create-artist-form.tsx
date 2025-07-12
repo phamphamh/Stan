@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-// import { useArtistFactory } from "@/lib/hooks/useContracts";
+import { useArtistFactory } from "@/lib/hooks/useContracts";
 import { usePrivy } from '@privy-io/react-auth';
 import { toast } from 'sonner';
 import { Loader2, Plus, Palette } from 'lucide-react';
@@ -22,9 +22,7 @@ export function CreateArtistForm() {
 
   const [isLoading, setIsLoading] = useState(false);
   const { authenticated } = usePrivy();
-  // const { createArtist, isCreating } = useArtistFactory();
-  const createArtist = null;
-  const isCreating = false;
+  const { createArtist } = useArtistFactory();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,11 +35,10 @@ export function CreateArtistForm() {
     setIsLoading(true);
 
     try {
-      // TODO: Implémenter la création d'artiste
-      console.log("Création d'artiste:", formData);
-
-      toast.info("Fonctionnalité en développement", {
-        description: "La création d'artiste sera bientôt disponible"
+      await createArtist(formData.name, formData.symbol);
+      
+      toast.success("Artiste créé avec succès!", {
+        description: "Le contrat et token ont été déployés"
       });
     } catch (error) {
       console.error("Erreur création artiste:", error);
@@ -160,10 +157,10 @@ export function CreateArtistForm() {
           {/* Bouton de soumission */}
           <Button
             type="submit"
-            disabled={!authenticated || isLoading || isCreating}
+            disabled={!authenticated || isLoading}
             className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white"
           >
-            {isLoading || isCreating ? (
+            {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Deploying Contract...

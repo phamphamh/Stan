@@ -39,40 +39,7 @@ export function useArtistFactory() {
 export function useBlackpinkArtist() {
   const { address: userAddress } = useAccount()
   const { writeContract } = useWriteContract()
-  const { artistAddress } = useArtistFactory()
-
-  // Fonctions de lecture des missions
-  const { data: missionName } = useReadContract({
-    address: artistAddress,
-    abi: ARTIST_ABI,
-    functionName: 'getMissionName',
-    args: [0n], // Mission index
-  })
-
-  const { data: missionDescription } = useReadContract({
-    address: artistAddress,
-    abi: ARTIST_ABI,
-    functionName: 'getMissionDescription',
-    args: [0n],
-  })
-
-  const { data: missionStatus } = useReadContract({
-    address: artistAddress,
-    abi: ARTIST_ABI,
-    functionName: 'getMissionStatus',
-    args: [0n],
-  })
-
-  // Statut du fan sur une mission
-  const { data: fanMissionStatus } = useReadContract({
-    address: artistAddress,
-    abi: ARTIST_ABI,
-    functionName: 'getStatuFanOnMission',
-    args: [0n, userAddress!],
-    query: {
-      enabled: !!userAddress,
-    },
-  })
+  const artistAddress = CONTRACTS.BLACKPINK_ARTIST
 
   // Adresse du Fan Token
   const { data: fanTokenAddress } = useReadContract({
@@ -81,7 +48,60 @@ export function useBlackpinkArtist() {
     functionName: 'getFanToken',
   })
 
-  // Fonctions d'écriture
+  // Adresse de l'artiste (owner du contrat)
+  const { data: artistOwner } = useReadContract({
+    address: artistAddress,
+    abi: ARTIST_ABI,
+    functionName: 'getArtistAddress',
+  })
+
+  // Fonction pour lire une mission spécifique
+  const getMissionData = (missionId: bigint) => {
+    const { data: name } = useReadContract({
+      address: artistAddress,
+      abi: ARTIST_ABI,
+      functionName: 'getMissionName',
+      args: [missionId],
+    })
+
+    const { data: description } = useReadContract({
+      address: artistAddress,
+      abi: ARTIST_ABI,
+      functionName: 'getMissionDescription',
+      args: [missionId],
+    })
+
+    const { data: status } = useReadContract({
+      address: artistAddress,
+      abi: ARTIST_ABI,
+      functionName: 'getMissionStatus',
+      args: [missionId],
+    })
+
+    const { data: fanStatus } = useReadContract({
+      address: artistAddress,
+      abi: ARTIST_ABI,
+      functionName: 'getStatuFanOnMission',
+      args: [missionId, userAddress!],
+      query: {
+        enabled: !!userAddress,
+      },
+    })
+
+    return { name, description, status, fanStatus }
+  }
+
+  // Fonction pour créer une mission (admin seulement)
+  const createMission = async (name: string, description: string, reward: bigint) => {
+    return writeContract({
+      address: artistAddress,
+      abi: ARTIST_ABI,
+      functionName: 'openMission',
+      args: [name, description, reward],
+    })
+  }
+
+  // Fonction pour s'inscrire à une mission (fan)
   const registerForMission = async (missionId: bigint) => {
     if (!userAddress) throw new Error('Wallet not connected')
 
@@ -93,6 +113,7 @@ export function useBlackpinkArtist() {
     })
   }
 
+  // Fonction pour compléter une mission (fan)
   const completeMission = async (missionId: bigint) => {
     if (!userAddress) throw new Error('Wallet not connected')
 
@@ -104,29 +125,32 @@ export function useBlackpinkArtist() {
     })
   }
 
-  const claimReward = async (rewardId: bigint) => {
-    if (!userAddress) throw new Error('Wallet not connected')
-
+  // Fonction pour fermer une mission (admin seulement)
+  const closeMission = async (missionId: bigint, fanAddress?: string) => {
     return writeContract({
       address: artistAddress,
       abi: ARTIST_ABI,
-      functionName: 'claimRewardFan',
-      args: [rewardId, userAddress],
+      functionName: 'closeMission',
+      args: [missionId, fanAddress || '0x0000000000000000000000000000000000000000'],
     })
   }
 
+  // Vérifier si l'utilisateur est l'artiste (owner du contrat)
+  const isArtist = userAddress && artistOwner && userAddress.toLowerCase() === artistOwner.toLowerCase()
+
   return {
-    // Données des missions
-    missionName,
-    missionDescription,
-    missionStatus,
-    fanMissionStatus,
+    // Données
     fanTokenAddress,
+    artistOwner,
+    artistAddress,
+    isArtist,
+    getMissionData,
 
     // Actions
+    createMission,
     registerForMission,
     completeMission,
-    claimReward,
+    closeMission,
   }
 }
 
@@ -183,6 +207,55 @@ export function useBlackpinkToken() {
     tokenSymbol,
     tokenDecimals,
     tokenAddress: fanTokenAddress,
+  }
+}
+
+// Hook pour récupérer les données d'une mission spécifique
+export function useMissionData(missionId: bigint) {
+  const { address: userAddress } = useAccount()
+  const artistAddress = CONTRACTS.BLACKPINK_ARTIST
+
+  const { data: name } = useReadContract({
+    address: artistAddress,
+    abi: ARTIST_ABI,
+    functionName: 'getMissionName',
+    args: [missionId],
+  })
+
+  const { data: description } = useReadContract({
+    address: artistAddress,
+    abi: ARTIST_ABI,
+    functionName: 'getMissionDescription',
+    args: [missionId],
+  })
+
+  const { data: status } = useReadContract({
+    address: artistAddress,
+    abi: ARTIST_ABI,
+    functionName: 'getMissionStatus',
+    args: [missionId],
+  })
+
+  const { data: fanStatus } = useReadContract({
+    address: artistAddress,
+    abi: ARTIST_ABI,
+    functionName: 'getStatuFanOnMission',
+    args: [missionId, userAddress!],
+    query: {
+      enabled: !!userAddress,
+    },
+  })
+
+  return {
+    name,
+    description,
+    status,
+    fanStatus,
+    isOpen: status === 1,
+    isClosed: status === 2,
+    isNotRegistered: fanStatus === 0,
+    isRegistered: fanStatus === 1,
+    isCompleted: fanStatus === 2,
   }
 }
 
