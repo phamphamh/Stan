@@ -8,6 +8,8 @@ contract Artist{
 
 	error MissionOutOfBand();
 	error MissionAlreadyComplete();
+	error YouCantAchieveForSomeoneElse();
+	error YouAreNotTheArtist();
 
 	struct	_mission{
 
@@ -18,6 +20,7 @@ contract Artist{
 		mapping( address => uint8)		__register;
 	}
 
+	address							public 		artistAddress;
 	CAP20							public 		FanToken;
 	mapping( uint256 => _mission )	private		Mission;
 	uint256							private		nb_mission;
@@ -30,12 +33,13 @@ contract Artist{
 	event	Register( uint256 , address );
 	event	Complete( uint256, address );
 
-	constructor( string memory name_, string memory symbole_ ){
+	constructor( string memory name_, string memory symbole_, address artistAddress_ ){
 		FanToken = new CAP20( name_, symbole_ , address(this) );
 		nb_mission = 0;
+		artistAddress = artistAddress_;
 	}
 	
-	function openMission( string memory name_, string memory description_, uint256 reward_ ) public returns ( uint256 ){
+	function openMission( string memory name_, string memory description_, uint256 reward_ ) public onlyArtist returns ( uint256 ){
 
 		Mission[ nb_mission ].__name = name_;
 		Mission[ nb_mission ].__description = description_;
@@ -48,6 +52,8 @@ contract Artist{
 
 	function completeFanMission( uint256 nb_mission_, address fanAddress_ ) public{
 		
+		if ( msg.sender != fanAddress_ )
+			revert YouCantAchieveForSomeoneElse();
 		if ( nb_mission_ >= nb_mission )
 			revert MissionOutOfBand();
 		if ( Mission[ nb_mission_ ].__missionStatus == 0)
@@ -59,7 +65,7 @@ contract Artist{
 		emit Complete( nb_mission_, fanAddress_ );
 	}
 
-	function closeMission( uint256 nb_mission_, address fanAddress_ ) public{
+	function closeMission( uint256 nb_mission_, address fanAddress_ ) public onlyArtist{
 		if ( nb_mission_ >= nb_mission )
 			revert MissionOutOfBand();
 		Mission[ nb_mission_ ].__missionStatus = 0;
@@ -68,6 +74,8 @@ contract Artist{
 
 	function registerFanOnMission( uint256 nb_mission_ , address fanAddress_ ) public {
 	
+		if ( msg.sender != fanAddress_ )
+			revert YouCantAchieveForSomeoneElse();
 		if ( Mission[ nb_mission_ ].__register[ fanAddress_ ] == COMPLETE )
 			revert MissionAlreadyComplete();
 		if ( nb_mission_ >= nb_mission )
@@ -88,5 +96,19 @@ contract Artist{
 		if ( nb_mission_ >= nb_mission )
 			revert MissionOutOfBand();
 		return ( Mission[ nb_mission_ ].__missionStatus );
+	}
+
+	function getArtistAddress() public view returns( address ){
+		return ( artistAddress );
+	}
+
+	function getFanToken() public view returns( address ){
+		return ( address( FanToken ) );
+	}
+
+	modifier onlyArtist(){
+		if ( msg.sender != artistAddress )
+			revert YouAreNotTheArtist();
+		_;
 	}
 }

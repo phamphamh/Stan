@@ -4,6 +4,7 @@ import { Poppins } from "next/font/google"
 import "./globals.css"
 import { cn } from "@/lib/utils"
 import { TokensProvider } from "@/lib/tokens-context"
+import { Web3Provider } from "@/components/providers/web3-provider"
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -31,9 +32,11 @@ export default function RootLayout({
           poppins.className,
         )}
       >
-        <TokensProvider>
-          {children}
-        </TokensProvider>
+        <Web3Provider>
+          <TokensProvider>
+            {children}
+          </TokensProvider>
+        </Web3Provider>
       </body>
     </html>
   )

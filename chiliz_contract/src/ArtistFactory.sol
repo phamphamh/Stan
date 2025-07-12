@@ -14,12 +14,16 @@ contract ArtistFactory {
 	}
 
 	function newArtist( string memory _name, string memory _symbole ) public {
-		_artist[ _index ] = new Artist( _name, _symbole );
+		_artist[ _index ] = new Artist( _name, _symbole, msg.sender );
 		_index++;
 	}
 
 	function getArtist( uint256 index_ ) public view returns( Artist ){
 		return ( _artist[ index_ ] );
+	}
+
+	function getArtistAddress( uint256 index_ ) public view returns( address ){
+		return ( address( _artist[ index_ ] ) );
 	}
 
 }
