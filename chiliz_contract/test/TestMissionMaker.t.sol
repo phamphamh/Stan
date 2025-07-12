@@ -15,6 +15,12 @@ contract TestArtistAndFactory is Test {
     Artist public artist2;
     Artist public artist3;
     
+    // Separate artist accounts (EOAs)
+    address public artist1Account = address(0xAAAA);
+    address public artist2Account = address(0xBBBB);
+    address public artist3Account = address(0xCCCC);
+    
+    // Fan accounts
     address public fan1 = address(0x1111);
     address public fan2 = address(0x2222);
     address public fan3 = address(0x3333);
@@ -24,24 +30,35 @@ contract TestArtistAndFactory is Test {
     function setUp() public {
         factory = new ArtistFactory();
         
-        // Create multiple artists
+        // Create artists with separate accounts
+        vm.startPrank(artist1Account);
         factory.newArtist("Artist1 Token", "ART1");
+        vm.stopPrank();
+        
+        vm.startPrank(artist2Account);
         factory.newArtist("Artist2 Token", "ART2");
+        vm.stopPrank();
+        
+        vm.startPrank(artist3Account);
         factory.newArtist("Artist3 Token", "ART3");
+        vm.stopPrank();
         
         artist1 = factory.getArtist(0);
         artist2 = factory.getArtist(1);
         artist3 = factory.getArtist(2);
         
         // Label addresses for better logs
+        vm.label(artist1Account, "Artist1Account");
+        vm.label(artist2Account, "Artist2Account");
+        vm.label(artist3Account, "Artist3Account");
         vm.label(fan1, "Fan1");
         vm.label(fan2, "Fan2");
         vm.label(fan3, "Fan3");
         vm.label(fan4, "Fan4");
         vm.label(fan5, "Fan5");
-        vm.label(address(artist1), "Artist1");
-        vm.label(address(artist2), "Artist2");
-        vm.label(address(artist3), "Artist3");
+        vm.label(address(artist1), "Artist1Contract");
+        vm.label(address(artist2), "Artist2Contract");
+        vm.label(address(artist3), "Artist3Contract");
     }
     
     // Utility function to log fan balances
@@ -81,7 +98,7 @@ contract TestArtistAndFactory is Test {
         console.log("=== Starting Permission Test: Only Fan Can Register For Themselves ===");
         
         // Artist creates a mission
-        vm.startPrank(address(artist1));
+        vm.startPrank(artist1Account);
         uint256 missionId = artist1.openMission("Permission Test Mission", "Test mission for permissions", 100);
         vm.stopPrank();
         
@@ -96,7 +113,7 @@ contract TestArtistAndFactory is Test {
         // Test 2: Artist tries to register Fan1 (should fail)
         console.log("Test 2: Artist trying to register Fan1");
         vm.expectRevert();
-        vm.prank(address(artist1));
+        vm.prank(artist1Account);
         artist1.registerFanOnMission(missionId, fan1);
         console.log("Artist correctly blocked from registering Fan1");
         
@@ -128,7 +145,7 @@ contract TestArtistAndFactory is Test {
         console.log("=== Starting Permission Test: Only Fan Can Complete For Themselves ===");
         
         // Artist creates a mission
-        vm.startPrank(address(artist1));
+        vm.startPrank(artist1Account);
         uint256 missionId = artist1.openMission("Completion Permission Mission", "Test mission for completion permissions", 100);
         vm.stopPrank();
         
@@ -153,7 +170,7 @@ contract TestArtistAndFactory is Test {
         // Test 2: Artist tries to complete for Fan2 (should fail)
         console.log("Test 2: Artist trying to complete for Fan2");
         vm.expectRevert();
-        vm.prank(address(artist1));
+        vm.prank(artist1Account);
         artist1.completeFanMission(missionId, fan2);
         console.log("Artist correctly blocked from completing for Fan2");
         
@@ -187,7 +204,7 @@ contract TestArtistAndFactory is Test {
         console.log("=== Starting Permission Test: Cross-Fan Interference Prevention ===");
         
         // Artist creates multiple missions
-        vm.startPrank(address(artist1));
+        vm.startPrank(artist1Account);
         uint256 mission1 = artist1.openMission("Mission 1", "First mission", 50);
         uint256 mission2 = artist1.openMission("Mission 2", "Second mission", 75);
         vm.stopPrank();
@@ -223,13 +240,13 @@ contract TestArtistAndFactory is Test {
         // Artist tries to complete for both fans (should fail)
         console.log("Test 3: Artist trying to complete for Fan1");
         vm.expectRevert();
-        vm.prank(address(artist1));
+        vm.prank(artist1Account);
         artist1.completeFanMission(mission1, fan1);
         console.log("Artist correctly blocked from completing for Fan1");
         
         console.log("Test 4: Artist trying to complete for Fan2");
         vm.expectRevert();
-        vm.prank(address(artist1));
+        vm.prank(artist1Account);
         artist1.completeFanMission(mission2, fan2);
         console.log("Artist correctly blocked from completing for Fan2");
         
@@ -260,7 +277,7 @@ contract TestArtistAndFactory is Test {
         console.log("=== Starting Permission Test: Registration After Completion ===");
         
         // Artist creates a mission
-        vm.startPrank(address(artist1));
+        vm.startPrank(artist1Account);
         uint256 missionId = artist1.openMission("Post-Completion Mission", "Test registration after completion", 100);
         vm.stopPrank();
         
@@ -290,7 +307,7 @@ contract TestArtistAndFactory is Test {
         // Test: Artist tries to register Fan1 (should fail due to permission)
         console.log("Test: Artist trying to register Fan1");
         vm.expectRevert();
-        vm.prank(address(artist1));
+        vm.prank(artist1Account);
         artist1.registerFanOnMission(missionId, fan1);
         console.log("Artist correctly blocked from registering Fan1");
         
@@ -306,7 +323,7 @@ contract TestArtistAndFactory is Test {
         
         // Test 1: Artist opens mission (should work)
         console.log("Test 1: Artist opening mission");
-        vm.startPrank(address(artist1));
+        vm.startPrank(artist1Account);
         uint256 missionId = artist1.openMission("Artist Mission", "Mission opened by artist", 100);
         vm.stopPrank();
         console.log("Artist successfully opened mission %s", missionId);
@@ -327,7 +344,7 @@ contract TestArtistAndFactory is Test {
         
         // Test 4: Artist opens another mission (should work)
         console.log("Test 4: Artist opening another mission");
-        vm.startPrank(address(artist1));
+        vm.startPrank(artist1Account);
         uint256 missionId2 = artist1.openMission("Second Artist Mission", "Second mission opened by artist", 150);
         vm.stopPrank();
         console.log("Artist successfully opened mission %s", missionId2);
@@ -339,7 +356,7 @@ contract TestArtistAndFactory is Test {
         
         assertEq(artist1.getMissionStatus(missionId), 1, "Mission 1 should be open");
         assertEq(artist1.getMissionStatus(missionId2), 1, "Mission 2 should be open");
-        assertEq(artist1.getArtistAddress(), address(artist1), "Artist address should be correct");
+        assertEq(artist1.getArtistAddress(), artist1Account, "Artist address should be correct");
         
         console.log("=== Permission Test: Mission Opening Completed Successfully ===");
     }
@@ -348,7 +365,7 @@ contract TestArtistAndFactory is Test {
         console.log("=== Starting Permission Test: Only Artist Can Close Missions ===");
         
         // Artist opens multiple missions
-        vm.startPrank(address(artist1));
+        vm.startPrank(artist1Account);
         uint256 mission1 = artist1.openMission("Mission 1", "First mission to close", 100);
         uint256 mission2 = artist1.openMission("Mission 2", "Second mission to close", 150);
         uint256 mission3 = artist1.openMission("Mission 3", "Third mission to close", 200);
@@ -368,7 +385,7 @@ contract TestArtistAndFactory is Test {
         
         // Test 1: Artist closes mission (should work)
         console.log("Test 1: Artist closing mission 1");
-        vm.startPrank(address(artist1));
+        vm.startPrank(artist1Account);
         artist1.closeMission(mission1, address(0));
         vm.stopPrank();
         console.log("Artist successfully closed mission 1");
@@ -389,7 +406,7 @@ contract TestArtistAndFactory is Test {
         
         // Test 4: Artist closes another mission (should work)
         console.log("Test 4: Artist closing mission 2");
-        vm.startPrank(address(artist1));
+        vm.startPrank(artist1Account);
         artist1.closeMission(mission2, address(0));
         vm.stopPrank();
         console.log("Artist successfully closed mission 2");
@@ -429,20 +446,20 @@ contract TestArtistAndFactory is Test {
         console.log("Artist2 address: %s", artist2.getArtistAddress());
         console.log("Artist3 address: %s", artist3.getArtistAddress());
         
-        assertEq(artist1.getArtistAddress(), address(artist1), "Artist1 address should match");
-        assertEq(artist2.getArtistAddress(), address(artist2), "Artist2 address should match");
-        assertEq(artist3.getArtistAddress(), address(artist3), "Artist3 address should match");
+        assertEq(artist1.getArtistAddress(), artist1Account, "Artist1 address should match");
+        assertEq(artist2.getArtistAddress(), artist2Account, "Artist2 address should match");
+        assertEq(artist3.getArtistAddress(), artist3Account, "Artist3 address should match");
         
         // Test that each artist can only control their own missions
         console.log("\n=== Testing Artist-Specific Control ===");
         
         // Artist1 opens mission
-        vm.startPrank(address(artist1));
+        vm.startPrank(artist1Account);
         uint256 artist1Mission = artist1.openMission("Artist1 Mission", "Mission by artist1", 100);
         vm.stopPrank();
         
         // Artist2 opens mission
-        vm.startPrank(address(artist2));
+        vm.startPrank(artist2Account);
         uint256 artist2Mission = artist2.openMission("Artist2 Mission", "Mission by artist2", 150);
         vm.stopPrank();
         
@@ -452,7 +469,7 @@ contract TestArtistAndFactory is Test {
         // Test: Artist1 tries to close Artist2's mission (should fail)
         console.log("Test: Artist1 trying to close Artist2's mission");
         vm.expectRevert();
-        vm.startPrank(address(artist1));
+        vm.startPrank(artist1Account);
         artist2.closeMission(artist2Mission, address(0));
         vm.stopPrank();
         console.log("Artist1 correctly blocked from closing Artist2's mission");
@@ -460,20 +477,20 @@ contract TestArtistAndFactory is Test {
         // Test: Artist2 tries to close Artist1's mission (should fail)
         console.log("Test: Artist2 trying to close Artist1's mission");
         vm.expectRevert();
-        vm.startPrank(address(artist2));
+        vm.startPrank(artist2Account);
         artist1.closeMission(artist1Mission, address(0));
         vm.stopPrank();
         console.log("Artist2 correctly blocked from closing Artist1's mission");
         
         // Test: Each artist can close their own mission
         console.log("Test: Artist1 closing their own mission");
-        vm.startPrank(address(artist1));
+        vm.startPrank(artist1Account);
         artist1.closeMission(artist1Mission, address(0));
         vm.stopPrank();
         console.log("Artist1 successfully closed their own mission");
         
         console.log("Test: Artist2 closing their own mission");
-        vm.startPrank(address(artist2));
+        vm.startPrank(artist2Account);
         artist2.closeMission(artist2Mission, address(0));
         vm.stopPrank();
         console.log("Artist2 successfully closed their own mission");
@@ -489,7 +506,7 @@ contract TestArtistAndFactory is Test {
         console.log("=== Starting Permission Test: Mission Lifecycle With Permissions ===");
         
         // Artist creates mission
-        vm.startPrank(address(artist1));
+        vm.startPrank(artist1Account);
         uint256 missionId = artist1.openMission("Lifecycle Mission", "Test mission lifecycle", 100);
         vm.stopPrank();
         
@@ -510,7 +527,7 @@ contract TestArtistAndFactory is Test {
         logFanBalances(artist1, "Artist1");
         
         // Artist closes mission before Fan2 can complete
-        vm.startPrank(address(artist1));
+        vm.startPrank(artist1Account);
         artist1.closeMission(missionId, address(0));
         vm.stopPrank();
         console.log("Artist closed mission");

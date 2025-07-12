@@ -102,6 +102,10 @@ contract Artist{
 		return ( artistAddress );
 	}
 
+	function getFanToken() public view returns( address ){
+		return ( address( FanToken ) );
+	}
+
 	modifier onlyArtist(){
 		if ( msg.sender != artistAddress )
 			revert YouAreNotTheArtist();
