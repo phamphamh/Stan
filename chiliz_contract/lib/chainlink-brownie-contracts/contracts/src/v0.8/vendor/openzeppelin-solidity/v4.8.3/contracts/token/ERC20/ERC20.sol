@@ -276,7 +276,7 @@ contract CAP20 is Context, IERC20, IERC20Metadata {
    * - `account` cannot be the zero address.
    * - `account` must have at least `amount` tokens.
    */
-  function _burn(address account, uint256 amount) OnlyOwner external virtual {
+  function _burn(address account, uint256 amount) external virtual {
     require(account != address(0), "ERC20: burn from the zero address");
 
     _beforeTokenTransfer(account, address(0), amount);
