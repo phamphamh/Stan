@@ -18,7 +18,7 @@ export default function TopNav() {
         <div className="flex items-center gap-1">
           <Link href="/" className="hover:opacity-80 transition-opacity">
             <h1 className="text-xl font-bold text-white cursor-pointer" style={{ color: config.group.theme.primary }}>
-              BLACKPINK
+              STAN
             </h1>
           </Link>
         </div>
