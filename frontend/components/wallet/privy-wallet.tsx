@@ -20,7 +20,7 @@ function PrivyWalletContent() {
   }
 
   if (!ready) {
-    return <div className="p-4 text-center text-gray-400">Chargement...</div>
+    return <div className="p-4 text-center text-gray-400">Loading...</div>
   }
 
   if (!authenticated) {
@@ -28,9 +28,9 @@ function PrivyWalletContent() {
       <div className="space-y-4 p-4">
         <div className="text-center">
           <Wallet className="h-12 w-12 mx-auto mb-4 text-gray-400" />
-          <h3 className="text-lg font-semibold text-white mb-2">Connecter un Wallet</h3>
+          <h3 className="text-lg font-semibold text-white mb-2">Connect a Wallet</h3>
           <p className="text-sm text-gray-400 mb-4">
-            Connectez-vous avec votre email ou wallet pour commencer
+            Log in with your email or wallet to get started
           </p>
         </div>
         <Button 
@@ -69,7 +69,7 @@ function PrivyWalletContent() {
       {/* Wallets List */}
       {wallets.length > 0 && (
         <div className="rounded-lg bg-[#1a1f2c] p-4">
-          <h3 className="text-lg font-semibold text-white mb-3">Wallets connectés</h3>
+          <h3 className="text-lg font-semibold text-white mb-3">Connected wallets</h3>
           <div className="space-y-2">
             {wallets.map((wallet, index) => (
               <div key={index} className="flex items-center justify-between p-2 rounded bg-gray-700">
@@ -97,7 +97,7 @@ function PrivyWalletContent() {
                     </Button>
                   </div>
                 </div>
-                <div className="text-xs text-green-400">Connecté</div>
+                <div className="text-xs text-green-400">Connected</div>
               </div>
             ))}
           </div>
@@ -114,9 +114,9 @@ export function PrivyWallet() {
       <div className="space-y-4 p-4">
         <div className="text-center">
           <Wallet className="h-12 w-12 mx-auto mb-4 text-gray-400" />
-          <h3 className="text-lg font-semibold text-white mb-2">Wallet non configuré</h3>
+          <h3 className="text-lg font-semibold text-white mb-2">Wallet not configured</h3>
           <p className="text-sm text-gray-400 mb-4">
-            La configuration Privy est requise pour utiliser le wallet
+            Privy configuration is required to use the wallet
           </p>
         </div>
       </div>

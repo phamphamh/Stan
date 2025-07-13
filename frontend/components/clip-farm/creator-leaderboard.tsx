@@ -63,7 +63,7 @@ export default function CreatorLeaderboard() {
     <div className="space-y-4">
       <div className="flex items-center gap-2">
         <Trophy className="h-5 w-5 text-yellow-400" />
-        <h2 className="text-xl font-bold text-white">Top Créateurs</h2>
+        <h2 className="text-xl font-bold text-white">Top Creators</h2>
       </div>
 
       <div className="space-y-3">
@@ -86,8 +86,8 @@ export default function CreatorLeaderboard() {
                 </div>
               </div>
               <div className="flex items-center gap-4 text-xs text-gray-400">
-                <span>🔥 {creator.viralClips} clips viraux</span>
-                <span>👁️ {creator.totalViews} vues</span>
+                <span>🔥 {creator.viralClips} viral clips</span>
+                <span>👁️ {creator.totalViews} views</span>
               </div>
             </div>
             {creator.rank === 1 && (
