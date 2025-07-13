@@ -18,7 +18,12 @@ const ARTIST_ABI = [
   "function getMissionReward(uint256 nb_mission_) public view returns(uint256)",
   "function completeFanMission(uint256 missionIndex, address fan) public",
   "function registerFanOnMission(uint256 missionIndex, address fan) public",
-  "function getStatuFanOnMission(uint256 missionIndex, address fan) public view returns(uint8)"
+  "function getStatuFanOnMission(uint256 missionIndex, address fan) public view returns(uint8)",
+  "function getFanToken() public view returns(address)"
+]
+
+const TOKEN_ABI = [
+  "function balanceOfEarnedToken(address account) public view returns(uint256)"
 ]
 
 export function useMissions() {
@@ -211,6 +216,9 @@ export function useMissions() {
         newSet.delete(missionIndex)
         return newSet
       })
+
+      // Déclencher un event pour rafraîchir le balance
+      window.dispatchEvent(new CustomEvent('missionCompleted'))
 
       return { success: true }
     } catch (error: any) {
