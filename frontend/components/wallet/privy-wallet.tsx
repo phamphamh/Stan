@@ -4,8 +4,9 @@ import { usePrivy, useWallets } from '@privy-io/react-auth'
 import { Button } from '@/components/ui/button'
 import { Coins, LogOut, Wallet, Copy, ExternalLink } from 'lucide-react'
 import { toast } from 'sonner'
+import { privyConfig } from '@/lib/config/privy'
 
-export function PrivyWallet() {
+function PrivyWalletContent() {
   const { ready, authenticated, login, logout, user } = usePrivy()
   const { wallets } = useWallets()
 
@@ -104,4 +105,23 @@ export function PrivyWallet() {
       )}
     </div>
   )
+}
+
+export function PrivyWallet() {
+  // Si Privy n'est pas configuré, afficher un message d'information
+  if (!privyConfig.appId || privyConfig.appId === '' || privyConfig.appId === 'demo-app-id') {
+    return (
+      <div className="space-y-4 p-4">
+        <div className="text-center">
+          <Wallet className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+          <h3 className="text-lg font-semibold text-white mb-2">Wallet non configuré</h3>
+          <p className="text-sm text-gray-400 mb-4">
+            La configuration Privy est requise pour utiliser le wallet
+          </p>
+        </div>
+      </div>
+    )
+  }
+
+  return <PrivyWalletContent />
 }

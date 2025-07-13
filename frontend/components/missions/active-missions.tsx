@@ -1,101 +1,64 @@
 "use client"
 
-import { useState } from "react"
-import { Camera, Trophy, CheckCircle, Upload, Star, Clock } from "lucide-react"
+import { Camera, Trophy, CheckCircle, Clock, Target, RefreshCw, Star } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { config } from "@/lib/config"
-import { motion, AnimatePresence } from "framer-motion"
-import { useTokens } from "@/lib/tokens-context"
-import ProofUploadModal from "@/components/modals/proof-upload-modal"
-import BadgeEarnedModal from "@/components/modals/badge-earned-modal"
-
-const activeMissions = [
-  {
-    id: "stream-mission",
-    title: "Stream BLACKPINK Songs",
-    description: "Listen to your favorite BLACKPINK songs and show your support",
-    reward: 75,
-    type: "stream" as const,
-    icon: Trophy,
-    requiresProof: true,
-    isSpecial: false,
-  },
-  {
-    id: "content-mission",
-    title: "Create BLACKPINK Content",
-    description: "Share your BLACKPINK love by creating content (TikTok, Instagram, etc.)",
-    reward: 100,
-    type: "content" as const,
-    icon: Camera,
-    requiresProof: true,
-    isSpecial: false,
-  },
-  {
-    id: "tweet-mission",
-    title: "Tweet About BLACKPINK",
-    description: "Share your love for BLACKPINK on Twitter/X and show your support",
-    reward: 100,
-    type: "content" as const,
-    icon: Star,
-    requiresProof: true,
-    isSpecial: false,
-  },
-]
-
-const photocardMission = {
-  id: "photocard-mission",
-  title: "Collect Your First Photocard",
-  description: "Purchase the exclusive BLACKPINK photocard to start your collection",
-  reward: 150,
-  type: "reward" as const,
-  icon: Star,
-  requiresProof: false,
-  isSpecial: true,
-}
+import { motion } from "framer-motion"
+import { useMissions } from "@/hooks/useMissions"
 
 export default function ActiveMissions() {
-  const { tokens, completeMission, missions } = useTokens()
-  const [uploadModalOpen, setUploadModalOpen] = useState(false)
-  const [selectedMission, setSelectedMission] = useState<string | null>(null)
-  const [badgeModalOpen, setBadgeModalOpen] = useState(false)
-  const [earnedBadge, setEarnedBadge] = useState<any>(null)
+  const { 
+    missions: contractMissions, 
+    loading, 
+    error, 
+    refreshMissions, 
+    completeMission, 
+    completedMissions, 
+    completingMissions,
+    registerMission,
+    registeredMissions,
+    registeringMissions,
+    fanCompletedMissions
+  } = useMissions()
 
-  const handleMissionComplete = (missionId: string, requiresProof: boolean) => {
-    if (requiresProof) {
-      setSelectedMission(missionId)
-      setUploadModalOpen(true)
+  const handleMissionComplete = async (missionIndex: number, missionName: string) => {
+    console.log(`Tentative de completion de la mission ${missionIndex} (${missionName})`)
+    const result = await completeMission(missionIndex)
+    
+    if (result.success) {
+      console.log(`Mission ${missionIndex} (${missionName}) complétée avec succès`)
     } else {
-      completeMissionDirect(missionId)
+      console.error(`Erreur lors de la completion de la mission ${missionIndex}:`, result.error)
     }
   }
 
-  const completeMissionDirect = async (missionId: string) => {
-    const result = await completeMission(missionId)
-
-    if (result.newBadge) {
-      setEarnedBadge(result.newBadge)
-      setBadgeModalOpen(true)
-    }
-
-    if (result.levelUp) {
-      // Show level up notification
-      setTimeout(() => {
-        alert("🎉 Level Up! You reached a new level!")
-      }, 1000)
+  const handleMissionRegister = async (missionIndex: number, missionName: string) => {
+    console.log(`Tentative d'inscription à la mission ${missionIndex} (${missionName})`)
+    const result = await registerMission(missionIndex)
+    
+    if (result.success) {
+      console.log(`Inscription à la mission ${missionIndex} (${missionName}) réussie`)
+    } else {
+      console.error(`Erreur lors de l'inscription à la mission ${missionIndex}:`, result.error)
     }
   }
 
-  const handleProofSubmitted = async (missionId: string) => {
-    setUploadModalOpen(false)
-    setSelectedMission(null)
-    completeMissionDirect(missionId)
+  const getMissionStatusText = (status: string) => {
+    switch (status) {
+      case '1':
+        return { text: 'Ouverte', color: 'text-green-400' }
+      case '2':
+        return { text: 'Fermée', color: 'text-red-400' }
+      default:
+        return { text: 'Inconnue', color: 'text-gray-400' }
+    }
   }
 
-  const isMissionCompleted = (missionId: string) => {
-    return missions.some(m => m.id === missionId && m.isCompleted)
+  const getMissionIcon = (index: number) => {
+    // Icônes alternées pour différencier visuellement les missions
+    const icons = [Trophy, Target, Star, Camera]
+    return icons[index % icons.length]
   }
-
-  const isPhotocardCompleted = isMissionCompleted(photocardMission.id)
 
   return (
     <>
@@ -103,124 +66,197 @@ export default function ActiveMissions() {
         <div className="text-center">
           <h2 className="text-xl font-bold text-white">Active Missions</h2>
           <p className="text-gray-400">Complete missions to earn tokens and badges</p>
-        </div>
-
-        {/* Special Photocard Mission Bar */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="rounded-lg p-3 bg-gradient-to-r from-pink-600/20 via-purple-600/20 to-pink-600/20 border border-pink-500/30 relative overflow-hidden"
-        >
-          <div className="absolute inset-0 bg-gradient-to-r from-pink-500/10 via-purple-500/10 to-pink-500/10 animate-pulse" />
-          <div className="relative z-10 text-center">
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <Star className="h-5 w-5 text-yellow-400" />
-              <h3 className="text-base font-bold text-white">Complete missions below and go get exclusive photocard</h3>
-              <Star className="h-5 w-5 text-yellow-400" />
-            </div>
+          <div className="flex justify-center mt-2">
             <Button
+              onClick={refreshMissions}
+              disabled={loading}
+              variant="outline"
               size="sm"
-              disabled={isPhotocardCompleted}
-              onClick={() => window.location.href = "/reward"}
-              className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white"
+              className="border-gray-600 text-gray-300 hover:bg-gray-700"
             >
-              {isPhotocardCompleted ? (
-                <>
-                  <CheckCircle className="mr-1 h-4 w-4" />
-                  Completed
-                </>
-              ) : (
-                "Get Photocard"
-              )}
+              <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+              Refresh
             </Button>
           </div>
-        </motion.div>
+        </div>
 
-        {/* Regular Missions */}
+        {/* Smart Contract Missions */}
         <div className="grid gap-4">
-          {activeMissions.map((mission, index) => {
-            const isCompleted = isMissionCompleted(mission.id)
-
-            return (
-              <motion.div
-                key={mission.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className="rounded-lg p-4 border bg-gradient-to-r from-pink-900/20 to-purple-900/20 border-pink-500/30"
+          {loading ? (
+            <div className="text-center py-8">
+              <RefreshCw className="h-12 w-12 text-gray-400 mx-auto mb-4 animate-spin" />
+              <h3 className="text-lg font-semibold text-white mb-2">Loading Missions</h3>
+              <p className="text-gray-400">Fetching missions from smart contract...</p>
+            </div>
+          ) : error ? (
+            <div className="text-center py-8">
+              <Clock className="h-12 w-12 text-red-400 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-white mb-2">Error Loading Missions</h3>
+              <p className="text-gray-400">{error}</p>
+              <Button
+                onClick={refreshMissions}
+                className="mt-4 bg-red-600 hover:bg-red-700"
               >
-                <div className="flex items-start gap-4">
-                  <div className="p-3 rounded-full bg-gradient-to-r from-pink-500 to-purple-500">
-                    <mission.icon className="h-6 w-6 text-white" />
-                  </div>
+                Retry
+              </Button>
+            </div>
+          ) : contractMissions.length > 0 ? (
+            contractMissions.filter(mission => mission.status === '1').map((mission, index) => {
+              const MissionIcon = getMissionIcon(mission.index)
+              const statusInfo = getMissionStatusText(mission.status)
+              const isOpen = mission.status === '1'
+              const isCompleted = completedMissions.has(mission.index)
+              const isCompleting = completingMissions.has(mission.index)
+              const isRegistered = registeredMissions.has(mission.index)
+              const isRegistering = registeringMissions.has(mission.index)
+              const isFanCompleted = fanCompletedMissions.has(mission.index)
 
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="font-semibold text-white">{mission.title}</h3>
-                      <div className="flex items-center gap-1 text-xs text-yellow-400">
-                        <Star className="h-3 w-3" />
-                        <span>Special</span>
+              return (
+                <motion.div
+                  key={mission.index}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  className={`rounded-lg p-4 border ${
+                    isOpen 
+                      ? 'bg-gradient-to-r from-green-900/20 to-blue-900/20 border-green-500/30' 
+                      : 'bg-gradient-to-r from-gray-900/20 to-gray-800/20 border-gray-500/30'
+                  }`}
+                >
+                  <div className="flex items-start gap-4">
+                    <div className={`p-3 rounded-full ${
+                      isOpen 
+                        ? 'bg-gradient-to-r from-green-500 to-blue-500' 
+                        : 'bg-gradient-to-r from-gray-500 to-gray-600'
+                    }`}>
+                      <MissionIcon className="h-6 w-6 text-white" />
+                    </div>
+
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h3 className="font-semibold text-white">{mission.name}</h3>
+                        <div className={`flex items-center gap-1 text-xs ${statusInfo.color}`}>
+                          <div className={`h-2 w-2 rounded-full ${
+                            isOpen ? 'bg-green-400' : 'bg-red-400'
+                          }`} />
+                          <span>{statusInfo.text}</span>
+                        </div>
+                      </div>
+
+                      <p className="text-sm text-gray-400 mb-3">{mission.description}</p>
+
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-bold" style={{ color: config.group.theme.primary }}>
+                          +{mission.reward} Tokens
+                        </span>
+
+                        <div className="flex flex-col gap-2 min-w-[120px]">
+                          {!isRegistered && isOpen && !isFanCompleted && (
+                            <Button
+                              size="sm"
+                              disabled={isRegistering}
+                              onClick={() => handleMissionRegister(mission.index, mission.name)}
+                              className="w-full"
+                              style={{
+                                backgroundColor: "#059669",
+                                color: "white",
+                              }}
+                            >
+                              {isRegistering ? (
+                                <>
+                                  <RefreshCw className="mr-1 h-4 w-4 animate-spin" />
+                                  Inscription...
+                                </>
+                              ) : (
+                                <>
+                                  <Target className="mr-1 h-4 w-4" />
+                                  Register
+                                </>
+                              )}
+                            </Button>
+                          )}
+                          
+                          {isFanCompleted && (
+                            <Button
+                              size="sm"
+                              disabled={true}
+                              className="w-full"
+                              style={{
+                                backgroundColor: "#10b981",
+                                color: "white",
+                              }}
+                            >
+                              <CheckCircle className="mr-1 h-4 w-4" />
+                              Already completed
+                            </Button>
+                          )}
+
+                          {!isFanCompleted && (
+                            <Button
+                              size="sm"
+                              disabled={!isOpen || isCompleted || isCompleting || !isRegistered}
+                              onClick={() => handleMissionComplete(mission.index, mission.name)}
+                              className="w-full"
+                              style={{
+                                backgroundColor: !isOpen || isCompleted || !isRegistered ? "#374151" : config.group.theme.primary,
+                                color: "white",
+                              }}
+                            >
+                              {!isOpen ? (
+                                <>
+                                  <Clock className="mr-1 h-4 w-4" />
+                                  Fermée
+                                </>
+                              ) : isCompleting ? (
+                                <>
+                                  <RefreshCw className="mr-1 h-4 w-4 animate-spin" />
+                                  In progress ...
+                                </>
+                              ) : isCompleted ? (
+                                <>
+                                  <CheckCircle className="mr-1 h-4 w-4" />
+                                  Complétée
+                                </>
+                              ) : !isRegistered ? (
+                                <>
+                                  <Clock className="mr-1 h-4 w-4" />
+                                  Registration required
+                                </>
+                              ) : (
+                                <>
+                                  <CheckCircle className="mr-1 h-4 w-4" />
+                                  Complete
+                                </>
+                              )}
+                            </Button>
+                          )}
+                        </div>
                       </div>
                     </div>
-
-                    <p className="text-sm text-gray-400 mb-3">{mission.description}</p>
-
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-bold" style={{ color: config.group.theme.primary }}>
-                        +{mission.reward} Tokens
-                      </span>
-
-                      <Button
-                        size="sm"
-                        disabled={isCompleted}
-                        onClick={() => handleMissionComplete(mission.id, mission.requiresProof)}
-                        style={{
-                          backgroundColor: isCompleted ? "#374151" : config.group.theme.primary,
-                          color: "white",
-                        }}
-                      >
-                        {isCompleted ? (
-                          <>
-                            <CheckCircle className="mr-1 h-4 w-4" />
-                            Completed
-                          </>
-                        ) : (
-                          <>
-                            <Upload className="mr-1 h-4 w-4" />
-                            Complete
-                          </>
-                        )}
-                      </Button>
-                    </div>
                   </div>
-                </div>
-              </motion.div>
-            )
-          })}
+                </motion.div>
+              )
+            })
+          ) : (
+            <div className="text-center py-8">
+              <Clock className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-white mb-2">No Missions Found</h3>
+              <p className="text-gray-400">No missions available in the smart contract.</p>
+            </div>
+          )}
         </div>
 
         <div className="text-center mt-6">
           <p className="text-sm text-gray-500">
             🎯 Complete missions to earn tokens and unlock special badges!
           </p>
+          {contractMissions.length > 0 && (
+            <p className="text-xs text-gray-600 mt-2">
+              Missions loaded from the smart contract • {contractMissions.filter(mission => mission.status === '1').length} open mission(s)
+            </p>
+          )}
         </div>
       </div>
-
-      <ProofUploadModal
-        isOpen={uploadModalOpen}
-        onClose={() => {
-          setUploadModalOpen(false)
-          setSelectedMission(null)
-        }}
-        onSubmit={() => selectedMission && handleProofSubmitted(selectedMission)}
-        missionTitle={selectedMission ? activeMissions.find(m => m.id === selectedMission)?.title || "" : ""}
-      />
-
-      <BadgeEarnedModal
-        isOpen={badgeModalOpen}
-        onClose={() => setBadgeModalOpen(false)}
-        badge={earnedBadge}
-      />
     </>
   )
 }

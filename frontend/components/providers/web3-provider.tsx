@@ -2,6 +2,7 @@
 
 import { PrivyProvider } from '@privy-io/react-auth'
 import { WagmiProvider } from '@privy-io/wagmi'
+import { WagmiProvider as StandardWagmiProvider } from 'wagmi'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { wagmiConfig } from '@/lib/config/wagmi'
 import { privyConfig } from '@/lib/config/privy'
@@ -20,13 +21,12 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
     return <div>{children}</div>
   }
 
-  // Si l'app ID Privy n'est pas configuré, on retourne juste les enfants avec QueryClient
-  if (!privyConfig.appId || privyConfig.appId === '') {
+  if (!privyConfig.appId || privyConfig.appId === '' || privyConfig.appId === 'demo-app-id') {
     return (
       <QueryClientProvider client={queryClient}>
-        <WagmiProvider config={wagmiConfig}>
+        <StandardWagmiProvider config={wagmiConfig}>
           {children}
-        </WagmiProvider>
+        </StandardWagmiProvider>
       </QueryClientProvider>
     )
   }

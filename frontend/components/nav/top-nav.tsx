@@ -1,16 +1,16 @@
 "use client"
 
-import { Coins } from "lucide-react"
+import { Coins, RefreshCw } from "lucide-react"
 import { useState } from "react"
 import ProfileModal from "@/components/modals/profile-modal"
 import Image from "next/image"
 import Link from "next/link"
 import { config } from "@/lib/config"
-import { useTokens } from "@/lib/tokens-context"
+import { useTokenBalance } from "@/hooks/useTokenBalance"
 
 export default function TopNav() {
   const [showProfile, setShowProfile] = useState(false)
-  const { tokens } = useTokens()
+  const { balance, loading, error } = useTokenBalance()
 
   return (
     <>
@@ -33,7 +33,13 @@ export default function TopNav() {
               }}
             >
               <Coins className="h-4 w-4" />
-              <span>{tokens}</span>
+              {loading ? (
+                <RefreshCw className="h-3 w-3 animate-spin" />
+              ) : error ? (
+                <span>0</span>
+              ) : (
+                <span>{balance}</span>
+              )}
             </div>
           </Link>
 

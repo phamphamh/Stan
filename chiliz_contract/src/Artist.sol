@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.19;
+pragma solidity 0.8.19;
 
 import { CAP20 } from "openzeppelin-contracts/token/ERC20/ERC20.sol";
 
@@ -191,6 +191,12 @@ contract Artist{
 		return ( Mission[ nb_mission_ ].__missionStatus );
 	}
 
+	function getMissionReward( uint256 nb_mission_ ) public view returns( uint256 ){
+		if ( nb_mission_ >= nb_mission )
+			revert MissionOutOfBand();
+		return ( Mission[ nb_mission_ ].__reward );
+	}
+
 	/* Reward getter front */
 
 	function getRewardName( uint256 nb_reward_ ) public view returns ( string memory ){
@@ -209,6 +215,14 @@ contract Artist{
 		if ( nb_reward_ >= nb_reward )
 			revert RewardOutOfBand();
 		return ( Reward[nb_reward_].__rewardStatus );
+	}
+
+	function getTokenName() public view returns( string memory ){
+		return ( FanToken.name() );
+	}
+
+	function getTokenSymbole() public view returns( string memory ){
+		return ( FanToken.symbol());
 	}
 
 	/* Artist permission */

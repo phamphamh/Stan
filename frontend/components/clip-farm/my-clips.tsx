@@ -61,7 +61,7 @@ export default function MyClips() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-white">Mes Clips</h2>
+        <h2 className="text-xl font-bold text-white">My Clips</h2>
         <span className="text-sm text-gray-400">{mockMyClips.length} clips</span>
       </div>
 
@@ -72,14 +72,14 @@ export default function MyClips() {
             <Eye className="h-4 w-4" />
             <span className="text-lg font-bold">{(totalViews / 1000).toFixed(1)}K</span>
           </div>
-          <p className="text-xs text-gray-400">Vues totales</p>
+          <p className="text-xs text-gray-400">Total viewss</p>
         </div>
         <div className="rounded-lg bg-[#1a1f2c] p-3 text-center">
           <div className="flex items-center justify-center gap-1 mb-1" style={{ color: config.group.theme.primary }}>
             <TrendingUp className="h-4 w-4" />
             <span className="text-lg font-bold">{totalTokensEarned}</span>
           </div>
-          <p className="text-xs text-gray-400">Tokens gagnés</p>
+          <p className="text-xs text-gray-400">Tokens earned</p>
         </div>
         <div className="rounded-lg bg-[#1a1f2c] p-3 text-center">
           <div className="flex items-center justify-center gap-1 mb-1 text-red-400">

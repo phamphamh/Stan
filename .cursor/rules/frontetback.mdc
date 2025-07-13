@@ -1,0 +1,92 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+🎯 Prompt AI Agent : Intégration Front ↔ Back avec Système On-Chain
+📚 Stack technique :
+Frontend : Next.js + React
+
+Backend : API (Node.js / Next.js API routes)
+
+Blockchain : Solidity (contracts déjà déployés — ne pas les modifier)
+
+Auth & Wallet : Privy (déjà intégré)
+
+Token : Chaque artiste a son propre token ERC-20 déployé
+
+Mission : Smart contract de mission déjà en place
+
+Mocked Missions : Présentes côté frontend uniquement
+
+🔐 Contexte :
+Les contrats intelligents ne doivent pas être modifiés.
+
+Un artiste, son token, ainsi qu’une mission réelle existent déjà on-chain.
+
+Le but est d’intégrer ces éléments dans le frontend proprement et méthodiquement, en remplaçant les mock data actuelles.
+
+✅ Objectifs de la tâche :
+Récupérer (GET) les missions on-chain via les contrats existants.
+
+Supprimer les missions mockées côté frontend et afficher les missions actives réelles.
+
+Gérer le système de récompense et de dépenses en tokens de manière réelle, on-chain, avec les tokens de l’artiste.
+
+Connecter cette logique à Privy, en lisant l’adresse de l’utilisateur connecté via Privy, et en ajustant son solde après action.
+
+Incrémenter / décrémenter le token via interaction smart contract (mint/burn ou transfert), selon la logique prévue dans la mission.
+
+Ne pas faire de supposition sur les contrats : appelle les fonctions existantes (via ABI + adresse).
+
+🧠 Méthodologie attendue :
+Analyser le frontend : identifier où se trouvent les missions mockées et où les remplacer proprement.
+
+Étudier l’ABI du smart contract de missions : identifier les fonctions getActiveMissions, claimReward, etc.
+
+Créer une couche d’abstraction dans le frontend pour appeler les smart contracts via ethers.js ou wagmi.
+
+Tester le lien frontend ↔ smart contract avant toute intégration UI complète.
+
+Valider la connexion Privy pour l’adresse utilisateur.
+
+Effectuer un test bout-en-bout :
+
+Un utilisateur accepte une mission
+
+Effectue l’action
+
+Gagne une récompense
+
+Le token est réellement transféré / dépensé
+
+⚠️ Précautions à prendre :
+Ne surtout pas écrire ou modifier les contrats Solidity.
+
+Ne pas coder toute l’intégration d’un coup. Travailler par étapes, avec des tests à chaque palier.
+
+S’assurer que les interactions avec la blockchain utilisent bien la bonne adresse de contrat + le bon ABI.
+
+Tester localement avec une chaîne de test (Goerli, Sepolia, ou fork local) pour éviter de dépenser du vrai gas dans les tests initiaux.
+
+Vérifier les erreurs classiques :
+
+Mauvais signer
+
+Mauvais provider
+
+Mauvais contract address
+
+Privy mal connecté
+
+Mission non claimable
+
+📦 Résultat attendu :
+Frontend affichant uniquement des missions réelles on-chain.
+
+Récompenses effectivement reçues sur le wallet de l’utilisateur après succès d’une mission.
+
+Tokens réellement dépensés lorsqu’une action coûte des jetons.
+
+Lien clair entre Privy et wallet → balance du token mise à jour dynamiquement.
+

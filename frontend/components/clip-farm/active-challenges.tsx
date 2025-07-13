@@ -9,7 +9,7 @@ const blackpinkChallenges = [
   {
     id: "1",
     title: "'Pink Venom' Edit Challenge",
-    description: "Créez un edit sur le MV de Pink Venom",
+    description: "Create an edit on the Pink Venom MV",
     song: "BLACKPINK - Pink Venom",
     tokenType: "BP",
     prize: 750,
@@ -21,7 +21,7 @@ const blackpinkChallenges = [
   {
     id: "2",
     title: "'How You Like That' Dance",
-    description: "Montrez vos meilleurs mouvements de danse",
+    description: "Show off your best dance moves",
     song: "BLACKPINK - How You Like That",
     tokenType: "BP",
     prize: 500,
@@ -37,7 +37,7 @@ export default function ActiveChallenges() {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-bold text-white">{"Défis actifs - BLACKPINK"}</h2>
+      <h2 className="text-xl font-bold text-white">{"Active Challenges - BLACKPINK"}</h2>
 
       <div className="space-y-4">
         {challenges.map((challenge, index) => (
