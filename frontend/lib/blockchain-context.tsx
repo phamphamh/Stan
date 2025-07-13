@@ -1,7 +1,6 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { usePrivy } from '@privy-io/react-auth';
 import { useAccount } from 'wagmi';
 
 interface BlockchainContextType {
@@ -23,20 +22,51 @@ export function BlockchainProvider({ children }: { children: ReactNode }) {
     ready: true,
   });
 
-  // Essayer d'utiliser Privy, mais gérer le cas où il n'est pas disponible
-  let privyState = null;
-  try {
-    privyState = usePrivy();
-  } catch (error) {
-    console.log('Privy non disponible, utilisation du mode développement');
-  }
+  const [privyState, setPrivyState] = useState<any>(null);
+  const [privyLoaded, setPrivyLoaded] = useState(false);
 
   // Utiliser Wagmi comme fallback
   const { address: wagmiAddress, isConnected: wagmiConnected } = useAccount();
 
-  // Si Privy est disponible, l'utiliser
-  if (privyState) {
-    const { ready, authenticated, login, logout } = privyState;
+  // Essayer de charger Privy de manière asynchrone
+  useEffect(() => {
+    const loadPrivy = async () => {
+      try {
+        const { usePrivy } = await import('@privy-io/react-auth');
+        // Cette partie ne fonctionnera que si Privy est correctement configuré
+        setPrivyLoaded(true);
+      } catch (error) {
+        console.log('Privy non disponible, utilisation du mode développement');
+        setPrivyLoaded(true);
+      }
+    };
+
+    loadPrivy();
+  }, []);
+
+  // Hook pour utiliser Privy si disponible
+  const usePrivyHook = () => {
+    try {
+      const { usePrivy } = require('@privy-io/react-auth');
+      return usePrivy();
+    } catch (error) {
+      return null;
+    }
+  };
+
+  // Essayer d'utiliser Privy seulement si chargé
+  let privyHookResult = null;
+  if (privyLoaded) {
+    try {
+      privyHookResult = usePrivyHook();
+    } catch (error) {
+      console.log('Privy hook non disponible');
+    }
+  }
+
+  // Si Privy est disponible et fonctionne, l'utiliser
+  if (privyHookResult && privyHookResult.ready) {
+    const { ready, authenticated, login, logout } = privyHookResult;
 
     const contextValue: BlockchainContextType = {
       isConnected: authenticated,
@@ -77,7 +107,7 @@ export function BlockchainProvider({ children }: { children: ReactNode }) {
         address: null,
       }));
     },
-    ready: mockState.ready,
+    ready: privyLoaded,
   };
 
   return (

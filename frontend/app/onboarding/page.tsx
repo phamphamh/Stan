@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { usePrivy } from '@privy-io/react-auth';
 import { useRouter } from 'next/navigation';
 import { WelcomeStep } from "@/components/onboarding/welcome-step";
 import { WalletStep } from "@/components/onboarding/wallet-step";
@@ -12,6 +11,7 @@ import { ProfileStep } from "@/components/onboarding/profile-step";
 import { PreferencesStep } from "@/components/onboarding/preferences-step";
 import { CompleteStep } from "@/components/onboarding/complete-step";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import { useBlockchain } from "@/lib/blockchain-context";
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 
 const STEPS = [
@@ -26,16 +26,17 @@ export default function OnboardingPage() {
   const [currentStep, setCurrentStep] = useState(0);
   const [isCompleting, setIsCompleting] = useState(false);
   const [stepsToShow, setStepsToShow] = useState(STEPS);
-  const { ready, authenticated } = usePrivy();
+  const { ready, isAuthenticated } = useBlockchain();
   const { hasProfile, createProfile, isProfileComplete } = useUserProfile();
   const router = useRouter();
 
-  // Redirect if already completed
+  // Redirect if already completed (mais seulement après que tout soit prêt)
   useEffect(() => {
-    if (ready && authenticated && isProfileComplete) {
+    if (ready && isAuthenticated && isProfileComplete) {
+      console.log('User already completed onboarding, redirecting to home');
       router.push('/');
     }
-  }, [ready, authenticated, isProfileComplete, router]);
+  }, [ready, isAuthenticated, isProfileComplete, router]);
 
   // Adapt steps based on what's missing
   useEffect(() => {
@@ -47,7 +48,7 @@ export default function OnboardingPage() {
     adaptedSteps.push(STEPS[0]);
 
     // Show wallet step only if not authenticated
-    if (!authenticated) {
+    if (!isAuthenticated) {
       adaptedSteps.push(STEPS[1]);
     }
 
@@ -65,7 +66,7 @@ export default function OnboardingPage() {
     adaptedSteps.push(STEPS[4]);
 
     setStepsToShow(adaptedSteps);
-  }, [ready, authenticated, hasProfile, isProfileComplete]);
+  }, [ready, isAuthenticated, hasProfile, isProfileComplete]);
 
   const progress = ((currentStep + 1) / stepsToShow.length) * 100;
 
@@ -82,13 +83,19 @@ export default function OnboardingPage() {
   };
 
   const handleComplete = async () => {
+    if (isCompleting) return; // Éviter les appels multiples
+
     setIsCompleting(true);
     try {
+      console.log('Completing onboarding...');
       // Create user profile and redirect to home
       await createProfile();
+      console.log('Profile created, redirecting to home...');
       router.push('/');
     } catch (error) {
       console.error("Erreur completion onboarding:", error);
+      // Rediriger quand même vers l'accueil
+      router.push('/');
     } finally {
       setIsCompleting(false);
     }
