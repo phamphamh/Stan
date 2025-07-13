@@ -24,10 +24,10 @@ export const privyConfig = {
         },
         rpcUrls: {
           default: {
-            http: ['https://rpc.chiliz.com'],
+            http: ['https://rpc.ankr.com/chiliz'],
           },
           public: {
-            http: ['https://rpc.chiliz.com'],
+            http: ['https://rpc.ankr.com/chiliz'],
           },
         },
         blockExplorers: {

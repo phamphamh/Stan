@@ -2,6 +2,8 @@
 src = "src"
 out = "out"
 libs = ["lib"]
+evm_version = "paris"
+solidity_version = "0.8.19"
 
 remappings = [
   "chainlink-evm/contracts/=lib/chainlink-brownie-contracts/contracts/",

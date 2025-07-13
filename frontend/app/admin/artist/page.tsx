@@ -10,12 +10,13 @@ import { CreateArtistForm } from "@/components/admin/create-artist-form";
 import { CreateMissionForm } from "@/components/admin/create-mission-form";
 import { ManageMissionsTable } from "@/components/admin/manage-missions-table";
 import { WithdrawTokensForm } from "@/components/admin/withdraw-tokens-form";
+import { TestConnection } from "@/components/admin/test-connection";
 import { PrivyWallet } from "@/components/wallet/privy-wallet";
 import { usePrivy } from '@privy-io/react-auth';
 import { Terminal, Code, Zap, Database, Settings, Coins, Users, ArrowLeft, Shield } from 'lucide-react';
 import Link from 'next/link';
 
-const ADMIN_PASSWORD = "blackpink2024"; // Mot de passe simple pour les devs
+const ADMIN_PASSWORD = "88888"; // Code d'accès admin
 
 export default function AdminArtistPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -141,8 +142,15 @@ export default function AdminArtistPage() {
          )}
 
         {/* Admin Tabs - Style Tech */}
-        <Tabs defaultValue="create-artist" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 bg-slate-800 border border-slate-700">
+        <Tabs defaultValue="test-connection" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-5 bg-slate-800 border border-slate-700">
+            <TabsTrigger
+              value="test-connection"
+              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-violet-600 data-[state=active]:text-white text-slate-300 hover:text-white"
+            >
+              <Database className="h-4 w-4 mr-2" />
+              Test Connection
+            </TabsTrigger>
             <TabsTrigger
               value="create-artist"
               className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-cyan-600 data-[state=active]:text-white text-slate-300 hover:text-white"
@@ -172,6 +180,10 @@ export default function AdminArtistPage() {
               Withdraw Tokens
             </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="test-connection" className="space-y-6">
+            <TestConnection />
+          </TabsContent>
 
           <TabsContent value="create-artist" className="space-y-6">
             <CreateArtistForm />

@@ -56,6 +56,13 @@ export const ARTIST_ABI = [
   },
   {
     "inputs": [{"internalType": "uint256", "name": "nb_mission_", "type": "uint256"}, {"internalType": "address", "name": "fanAddress_", "type": "address"}],
+    "name": "closeMission",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{"internalType": "uint256", "name": "nb_mission_", "type": "uint256"}, {"internalType": "address", "name": "fanAddress_", "type": "address"}],
     "name": "getStatuFanOnMission",
     "outputs": [{"internalType": "uint8", "name": "", "type": "uint8"}],
     "stateMutability": "view",
