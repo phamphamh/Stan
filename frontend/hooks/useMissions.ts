@@ -29,7 +29,7 @@ export function useMissions() {
   const [completingMissions, setCompletingMissions] = useState<Set<number>>(new Set())
   const [registeredMissions, setRegisteredMissions] = useState<Set<number>>(new Set())
   const [registeringMissions, setRegisteringMissions] = useState<Set<number>>(new Set())
-  const [fanMissionStatuses, setFanMissionStatuses] = useState<Map<number, string>>(new Map())
+  const [fanCompletedMissions, setFanCompletedMissions] = useState<Set<number>>(new Set())
 
   useEffect(() => {
     async function fetchMissions() {
@@ -83,11 +83,47 @@ export function useMissions() {
         }
 
         setMissions(foundMissions)
+        
+        // Vérifier quelles missions ont été complétées par le fan
+        await checkFanCompletedMissions(foundMissions)
       } catch (err: any) {
         console.error('Erreur lors de la récupération des missions:', err)
         setError(err.message || 'Erreur inconnue')
       } finally {
         setLoading(false)
+      }
+    }
+
+    async function checkFanCompletedMissions(missions: Mission[]) {
+      try {
+        const RPC_URL = process.env.NEXT_PUBLIC_RPC_URL
+        const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_ARTIST_CONTRACT_ADDRESS?.replace(';', '')
+        const FAN_ADDRESS = process.env.NEXT_PUBLIC_PROD_PUBLIC_KEY?.replace(';', '')
+
+        if (!RPC_URL || !CONTRACT_ADDRESS || !FAN_ADDRESS) return
+
+        const provider = new ethers.JsonRpcProvider(RPC_URL)
+        const contract = new ethers.Contract(CONTRACT_ADDRESS, ARTIST_ABI, provider)
+
+        const completedSet = new Set<number>()
+
+        for (const mission of missions) {
+          try {
+            const fanStatus = await contract.getStatuFanOnMission(mission.index, FAN_ADDRESS)
+            const statusString = fanStatus.toString()
+            
+            // Si le statut est 2, la mission est complétée par ce fan
+            if (statusString === '2') {
+              completedSet.add(mission.index)
+            }
+          } catch (error) {
+            // Pas de statut trouvé, la mission n'est pas complétée
+          }
+        }
+
+        setFanCompletedMissions(completedSet)
+      } catch (error) {
+        console.error('Erreur lors de la vérification des missions complétées:', error)
       }
     }
 
@@ -241,6 +277,7 @@ export function useMissions() {
     completingMissions,
     registerMission,
     registeredMissions,
-    registeringMissions
+    registeringMissions,
+    fanCompletedMissions
   }
 }

@@ -17,7 +17,8 @@ export default function ActiveMissions() {
     completingMissions,
     registerMission,
     registeredMissions,
-    registeringMissions
+    registeringMissions,
+    fanCompletedMissions
   } = useMissions()
 
   const handleMissionComplete = async (missionIndex: number, missionName: string) => {
@@ -108,6 +109,7 @@ export default function ActiveMissions() {
               const isCompleting = completingMissions.has(mission.index)
               const isRegistered = registeredMissions.has(mission.index)
               const isRegistering = registeringMissions.has(mission.index)
+              const isFanCompleted = fanCompletedMissions.has(mission.index)
 
               return (
                 <motion.div
@@ -149,7 +151,7 @@ export default function ActiveMissions() {
                         </span>
 
                         <div className="flex flex-col gap-2 min-w-[120px]">
-                          {!isRegistered && isOpen && (
+                          {!isRegistered && isOpen && !isFanCompleted && (
                             <Button
                               size="sm"
                               disabled={isRegistering}
@@ -173,44 +175,61 @@ export default function ActiveMissions() {
                               )}
                             </Button>
                           )}
+                          
+                          {isFanCompleted && (
+                            <Button
+                              size="sm"
+                              disabled={true}
+                              className="w-full"
+                              style={{
+                                backgroundColor: "#10b981",
+                                color: "white",
+                              }}
+                            >
+                              <CheckCircle className="mr-1 h-4 w-4" />
+                              Déjà complétée
+                            </Button>
+                          )}
 
-                          <Button
-                            size="sm"
-                            disabled={!isOpen || isCompleted || isCompleting || !isRegistered}
-                            onClick={() => handleMissionComplete(mission.index, mission.name)}
-                            className="w-full"
-                            style={{
-                              backgroundColor: !isOpen || isCompleted || !isRegistered ? "#374151" : config.group.theme.primary,
-                              color: "white",
-                            }}
-                          >
-                            {!isOpen ? (
-                              <>
-                                <Clock className="mr-1 h-4 w-4" />
-                                Fermée
-                              </>
-                            ) : isCompleting ? (
-                              <>
-                                <RefreshCw className="mr-1 h-4 w-4 animate-spin" />
-                                En cours...
-                              </>
-                            ) : isCompleted ? (
-                              <>
-                                <CheckCircle className="mr-1 h-4 w-4" />
-                                Complétée
-                              </>
-                            ) : !isRegistered ? (
-                              <>
-                                <Clock className="mr-1 h-4 w-4" />
-                                Inscription requise
-                              </>
-                            ) : (
-                              <>
-                                <CheckCircle className="mr-1 h-4 w-4" />
-                                Complete
-                              </>
-                            )}
-                          </Button>
+                          {!isFanCompleted && (
+                            <Button
+                              size="sm"
+                              disabled={!isOpen || isCompleted || isCompleting || !isRegistered}
+                              onClick={() => handleMissionComplete(mission.index, mission.name)}
+                              className="w-full"
+                              style={{
+                                backgroundColor: !isOpen || isCompleted || !isRegistered ? "#374151" : config.group.theme.primary,
+                                color: "white",
+                              }}
+                            >
+                              {!isOpen ? (
+                                <>
+                                  <Clock className="mr-1 h-4 w-4" />
+                                  Fermée
+                                </>
+                              ) : isCompleting ? (
+                                <>
+                                  <RefreshCw className="mr-1 h-4 w-4 animate-spin" />
+                                  En cours...
+                                </>
+                              ) : isCompleted ? (
+                                <>
+                                  <CheckCircle className="mr-1 h-4 w-4" />
+                                  Complétée
+                                </>
+                              ) : !isRegistered ? (
+                                <>
+                                  <Clock className="mr-1 h-4 w-4" />
+                                  Inscription requise
+                                </>
+                              ) : (
+                                <>
+                                  <CheckCircle className="mr-1 h-4 w-4" />
+                                  Complete
+                                </>
+                              )}
+                            </Button>
+                          )}
                         </div>
                       </div>
                     </div>
