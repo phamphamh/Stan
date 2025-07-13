@@ -16,8 +16,9 @@ const ARTIST_ABI = [
   "function getMissionDescription(uint256 nb_mission_) public view returns(string memory)",
   "function getMissionStatus(uint256 nb_mission_) public view returns(uint8)",
   "function getMissionReward(uint256 nb_mission_) public view returns(uint256)",
-  "function completeFanMission(address fan, uint256 missionIndex) public",
-  "function registerFanOnMission(uint256 missionIndex, address fan) public"
+  "function completeFanMission(uint256 missionIndex, address fan) public",
+  "function registerFanOnMission(uint256 missionIndex, address fan) public",
+  "function getStatuFanOnMission(uint256 missionIndex, address fan) public view returns(uint8)"
 ]
 
 export function useMissions() {
@@ -28,6 +29,7 @@ export function useMissions() {
   const [completingMissions, setCompletingMissions] = useState<Set<number>>(new Set())
   const [registeredMissions, setRegisteredMissions] = useState<Set<number>>(new Set())
   const [registeringMissions, setRegisteringMissions] = useState<Set<number>>(new Set())
+  const [fanMissionStatuses, setFanMissionStatuses] = useState<Map<number, string>>(new Map())
 
   useEffect(() => {
     async function fetchMissions() {
@@ -160,7 +162,11 @@ export function useMissions() {
       const wallet = new ethers.Wallet(PRIVATE_KEY, provider)
       const contract = new ethers.Contract(CONTRACT_ADDRESS, ARTIST_ABI, wallet)
 
-      const tx = await contract.completeFanMission(FAN_ADDRESS, missionIndex)
+      // Vérifier le statut du fan avant de tenter la completion
+      const fanStatus = await contract.getStatuFanOnMission(missionIndex, FAN_ADDRESS)
+      console.log(`Statut du fan avant completion de la mission ${missionIndex}:`, fanStatus.toString())
+
+      const tx = await contract.completeFanMission(missionIndex, FAN_ADDRESS)
       await tx.wait()
 
       setCompletedMissions(prev => new Set(prev).add(missionIndex))
@@ -201,6 +207,10 @@ export function useMissions() {
 
       const tx = await contract.registerFanOnMission(missionIndex, FAN_ADDRESS)
       await tx.wait()
+
+      // Vérifier le statut après inscription
+      const fanStatus = await contract.getStatuFanOnMission(missionIndex, FAN_ADDRESS)
+      console.log(`Statut du fan après inscription à la mission ${missionIndex}:`, fanStatus.toString())
 
       setRegisteredMissions(prev => new Set(prev).add(missionIndex))
       setRegisteringMissions(prev => {
