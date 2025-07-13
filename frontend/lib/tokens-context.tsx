@@ -103,46 +103,16 @@ export function TokensProvider({ children }: { children: React.ReactNode }) {
   const [xp, setXp] = useState(0)
   const [earnedBadges, setEarnedBadges] = useState<UserBadge[]>([])
   const [transactions, setTransactions] = useState<Transaction[]>([])
-  const [missions, setMissions] = useState<Mission[]>([
-    {
-      id: "content-mission",
-      title: "Create BLACKPINK Content",
-      description: "Share your BLACKPINK love by creating content (TikTok, Instagram, etc.)",
-      reward: 100,
-      isCompleted: false,
-      type: "content"
-    },
-    {
-      id: "stream-mission",
-      title: "Stream BLACKPINK Songs",
-      description: "Listen to your favorite BLACKPINK songs and show your support",
-      reward: 75,
-      isCompleted: false,
-      type: "stream"
-    },
-    {
-      id: "tweet-mission",
-      title: "Tweet About BLACKPINK",
-      description: "Share your love for BLACKPINK on Twitter/X and show your support",
-      reward: 100,
-      isCompleted: false,
-      type: "content"
-    },
-    {
-      id: "photocard-mission",
-      title: "Collect Your First Photocard",
-      description: "Purchase the exclusive BLACKPINK photocard to start your collection",
-      reward: 150,
-      isCompleted: false,
-      type: "shop"
-    }
-  ])
+  const [missions, setMissions] = useState<Mission[]>([])
 
   // Calculate XP needed for next level (exponential growth)
   const xpToNextLevel = level * 200
 
   // Load data from localStorage on mount
   useEffect(() => {
+    // Vérifier que nous sommes côté client
+    if (typeof window === 'undefined') return
+
     const savedTokens = localStorage.getItem('blackpink-tokens')
     const savedLevel = localStorage.getItem('blackpink-level')
     const savedXp = localStorage.getItem('blackpink-xp')
@@ -176,6 +146,9 @@ export function TokensProvider({ children }: { children: React.ReactNode }) {
 
   // Save data to localStorage whenever it changes
   useEffect(() => {
+    // Vérifier que nous sommes côté client
+    if (typeof window === 'undefined') return
+
     localStorage.setItem('blackpink-tokens', tokens.toString())
     localStorage.setItem('blackpink-level', level.toString())
     localStorage.setItem('blackpink-xp', xp.toString())
@@ -302,12 +275,16 @@ export function TokensProvider({ children }: { children: React.ReactNode }) {
     setEarnedBadges([])
     setMissions(missions.map(m => ({ ...m, isCompleted: false })))
     setTransactions([]) // Clear transactions on reset
-    localStorage.removeItem('blackpink-tokens')
-    localStorage.removeItem('blackpink-level')
-    localStorage.removeItem('blackpink-xp')
-    localStorage.removeItem('blackpink-missions')
-    localStorage.removeItem('blackpink-badges')
-    localStorage.removeItem('blackpink-transactions')
+    
+    // Vérifier que nous sommes côté client
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('blackpink-tokens')
+      localStorage.removeItem('blackpink-level')
+      localStorage.removeItem('blackpink-xp')
+      localStorage.removeItem('blackpink-missions')
+      localStorage.removeItem('blackpink-badges')
+      localStorage.removeItem('blackpink-transactions')
+    }
   }
 
   return (
