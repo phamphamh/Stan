@@ -187,7 +187,7 @@ export default function ActiveMissions() {
                               }}
                             >
                               <CheckCircle className="mr-1 h-4 w-4" />
-                              Déjà complétée
+                              Already completed
                             </Button>
                           )}
 
@@ -210,7 +210,7 @@ export default function ActiveMissions() {
                               ) : isCompleting ? (
                                 <>
                                   <RefreshCw className="mr-1 h-4 w-4 animate-spin" />
-                                  En cours...
+                                  In progress ...
                                 </>
                               ) : isCompleted ? (
                                 <>
@@ -220,7 +220,7 @@ export default function ActiveMissions() {
                               ) : !isRegistered ? (
                                 <>
                                   <Clock className="mr-1 h-4 w-4" />
-                                  Inscription requise
+                                  Registration required
                                 </>
                               ) : (
                                 <>
@@ -252,7 +252,7 @@ export default function ActiveMissions() {
           </p>
           {contractMissions.length > 0 && (
             <p className="text-xs text-gray-600 mt-2">
-              Missions chargées depuis le smart contract • {contractMissions.filter(mission => mission.status === '1').length} mission(s) ouverte(s)
+              Missions loaded from the smart contract • {contractMissions.filter(mission => mission.status === '1').length} open mission(s)
             </p>
           )}
         </div>
