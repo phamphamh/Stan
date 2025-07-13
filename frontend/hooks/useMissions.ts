@@ -15,13 +15,19 @@ const ARTIST_ABI = [
   "function getMissionName(uint256 nb_mission_) public view returns(string memory)",
   "function getMissionDescription(uint256 nb_mission_) public view returns(string memory)",
   "function getMissionStatus(uint256 nb_mission_) public view returns(uint8)",
-  "function getMissionReward(uint256 nb_mission_) public view returns(uint256)"
+  "function getMissionReward(uint256 nb_mission_) public view returns(uint256)",
+  "function completeFanMission(address fan, uint256 missionIndex) public",
+  "function registerFanOnMission(uint256 missionIndex, address fan) public"
 ]
 
 export function useMissions() {
   const [missions, setMissions] = useState<Mission[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [completedMissions, setCompletedMissions] = useState<Set<number>>(new Set())
+  const [completingMissions, setCompletingMissions] = useState<Set<number>>(new Set())
+  const [registeredMissions, setRegisteredMissions] = useState<Set<number>>(new Set())
+  const [registeringMissions, setRegisteringMissions] = useState<Set<number>>(new Set())
 
   useEffect(() => {
     async function fetchMissions() {
@@ -137,10 +143,94 @@ export function useMissions() {
     }
   }
 
+  const completeMission = async (missionIndex: number) => {
+    try {
+      setCompletingMissions(prev => new Set(prev).add(missionIndex))
+      
+      const RPC_URL = process.env.NEXT_PUBLIC_RPC_URL
+      const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_ARTIST_CONTRACT_ADDRESS?.replace(';', '')
+      const FAN_ADDRESS = process.env.NEXT_PUBLIC_PROD_PUBLIC_KEY?.replace(';', '')
+      const PRIVATE_KEY = process.env.NEXT_PUBLIC_PROD_PRIVATE_KEY?.replace(';', '')
+
+      if (!RPC_URL || !CONTRACT_ADDRESS || !FAN_ADDRESS || !PRIVATE_KEY) {
+        throw new Error('Configuration manquante pour compléter la mission')
+      }
+
+      const provider = new ethers.JsonRpcProvider(RPC_URL)
+      const wallet = new ethers.Wallet(PRIVATE_KEY, provider)
+      const contract = new ethers.Contract(CONTRACT_ADDRESS, ARTIST_ABI, wallet)
+
+      const tx = await contract.completeFanMission(FAN_ADDRESS, missionIndex)
+      await tx.wait()
+
+      setCompletedMissions(prev => new Set(prev).add(missionIndex))
+      setCompletingMissions(prev => {
+        const newSet = new Set(prev)
+        newSet.delete(missionIndex)
+        return newSet
+      })
+
+      return { success: true }
+    } catch (error: any) {
+      setCompletingMissions(prev => {
+        const newSet = new Set(prev)
+        newSet.delete(missionIndex)
+        return newSet
+      })
+      console.error('Erreur lors de la completion de la mission:', error)
+      return { success: false, error: error.message }
+    }
+  }
+
+  const registerMission = async (missionIndex: number) => {
+    try {
+      setRegisteringMissions(prev => new Set(prev).add(missionIndex))
+      
+      const RPC_URL = process.env.NEXT_PUBLIC_RPC_URL
+      const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_ARTIST_CONTRACT_ADDRESS?.replace(';', '')
+      const FAN_ADDRESS = process.env.NEXT_PUBLIC_PROD_PUBLIC_KEY?.replace(';', '')
+      const PRIVATE_KEY = process.env.NEXT_PUBLIC_PROD_PRIVATE_KEY?.replace(';', '')
+
+      if (!RPC_URL || !CONTRACT_ADDRESS || !FAN_ADDRESS || !PRIVATE_KEY) {
+        throw new Error('Configuration manquante pour s\'inscrire à la mission')
+      }
+
+      const provider = new ethers.JsonRpcProvider(RPC_URL)
+      const wallet = new ethers.Wallet(PRIVATE_KEY, provider)
+      const contract = new ethers.Contract(CONTRACT_ADDRESS, ARTIST_ABI, wallet)
+
+      const tx = await contract.registerFanOnMission(missionIndex, FAN_ADDRESS)
+      await tx.wait()
+
+      setRegisteredMissions(prev => new Set(prev).add(missionIndex))
+      setRegisteringMissions(prev => {
+        const newSet = new Set(prev)
+        newSet.delete(missionIndex)
+        return newSet
+      })
+
+      return { success: true }
+    } catch (error: any) {
+      setRegisteringMissions(prev => {
+        const newSet = new Set(prev)
+        newSet.delete(missionIndex)
+        return newSet
+      })
+      console.error('Erreur lors de l\'inscription à la mission:', error)
+      return { success: false, error: error.message }
+    }
+  }
+
   return {
     missions,
     loading,
     error,
-    refreshMissions
+    refreshMissions,
+    completeMission,
+    completedMissions,
+    completingMissions,
+    registerMission,
+    registeredMissions,
+    registeringMissions
   }
 }

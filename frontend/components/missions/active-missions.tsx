@@ -7,12 +7,39 @@ import { motion } from "framer-motion"
 import { useMissions } from "@/hooks/useMissions"
 
 export default function ActiveMissions() {
-  const { missions: contractMissions, loading, error, refreshMissions } = useMissions()
+  const { 
+    missions: contractMissions, 
+    loading, 
+    error, 
+    refreshMissions, 
+    completeMission, 
+    completedMissions, 
+    completingMissions,
+    registerMission,
+    registeredMissions,
+    registeringMissions
+  } = useMissions()
 
-  const handleMissionComplete = (missionIndex: number, missionName: string) => {
-    // Pour l'instant, ne fait rien - sera implémenté plus tard
-    console.log(`Mission ${missionIndex} (${missionName}) marquée comme complétée`)
-    // TODO: Implémenter la logique de completion de mission
+  const handleMissionComplete = async (missionIndex: number, missionName: string) => {
+    console.log(`Tentative de completion de la mission ${missionIndex} (${missionName})`)
+    const result = await completeMission(missionIndex)
+    
+    if (result.success) {
+      console.log(`Mission ${missionIndex} (${missionName}) complétée avec succès`)
+    } else {
+      console.error(`Erreur lors de la completion de la mission ${missionIndex}:`, result.error)
+    }
+  }
+
+  const handleMissionRegister = async (missionIndex: number, missionName: string) => {
+    console.log(`Tentative d'inscription à la mission ${missionIndex} (${missionName})`)
+    const result = await registerMission(missionIndex)
+    
+    if (result.success) {
+      console.log(`Inscription à la mission ${missionIndex} (${missionName}) réussie`)
+    } else {
+      console.error(`Erreur lors de l'inscription à la mission ${missionIndex}:`, result.error)
+    }
   }
 
   const getMissionStatusText = (status: string) => {
@@ -73,10 +100,14 @@ export default function ActiveMissions() {
               </Button>
             </div>
           ) : contractMissions.length > 0 ? (
-            contractMissions.map((mission, index) => {
+            contractMissions.filter(mission => mission.status === '1').map((mission, index) => {
               const MissionIcon = getMissionIcon(mission.index)
               const statusInfo = getMissionStatusText(mission.status)
               const isOpen = mission.status === '1'
+              const isCompleted = completedMissions.has(mission.index)
+              const isCompleting = completingMissions.has(mission.index)
+              const isRegistered = registeredMissions.has(mission.index)
+              const isRegistering = registeringMissions.has(mission.index)
 
               return (
                 <motion.div
@@ -117,27 +148,70 @@ export default function ActiveMissions() {
                           +{mission.reward} Tokens
                         </span>
 
-                        <Button
-                          size="sm"
-                          disabled={!isOpen}
-                          onClick={() => handleMissionComplete(mission.index, mission.name)}
-                          style={{
-                            backgroundColor: !isOpen ? "#374151" : config.group.theme.primary,
-                            color: "white",
-                          }}
-                        >
-                          {!isOpen ? (
-                            <>
-                              <Clock className="mr-1 h-4 w-4" />
-                              Fermée
-                            </>
-                          ) : (
-                            <>
-                              <CheckCircle className="mr-1 h-4 w-4" />
-                              Complete
-                            </>
+                        <div className="flex flex-col gap-2 min-w-[120px]">
+                          {!isRegistered && isOpen && (
+                            <Button
+                              size="sm"
+                              disabled={isRegistering}
+                              onClick={() => handleMissionRegister(mission.index, mission.name)}
+                              className="w-full"
+                              style={{
+                                backgroundColor: "#059669",
+                                color: "white",
+                              }}
+                            >
+                              {isRegistering ? (
+                                <>
+                                  <RefreshCw className="mr-1 h-4 w-4 animate-spin" />
+                                  Inscription...
+                                </>
+                              ) : (
+                                <>
+                                  <Target className="mr-1 h-4 w-4" />
+                                  Register
+                                </>
+                              )}
+                            </Button>
                           )}
-                        </Button>
+
+                          <Button
+                            size="sm"
+                            disabled={!isOpen || isCompleted || isCompleting || !isRegistered}
+                            onClick={() => handleMissionComplete(mission.index, mission.name)}
+                            className="w-full"
+                            style={{
+                              backgroundColor: !isOpen || isCompleted || !isRegistered ? "#374151" : config.group.theme.primary,
+                              color: "white",
+                            }}
+                          >
+                            {!isOpen ? (
+                              <>
+                                <Clock className="mr-1 h-4 w-4" />
+                                Fermée
+                              </>
+                            ) : isCompleting ? (
+                              <>
+                                <RefreshCw className="mr-1 h-4 w-4 animate-spin" />
+                                En cours...
+                              </>
+                            ) : isCompleted ? (
+                              <>
+                                <CheckCircle className="mr-1 h-4 w-4" />
+                                Complétée
+                              </>
+                            ) : !isRegistered ? (
+                              <>
+                                <Clock className="mr-1 h-4 w-4" />
+                                Inscription requise
+                              </>
+                            ) : (
+                              <>
+                                <CheckCircle className="mr-1 h-4 w-4" />
+                                Complete
+                              </>
+                            )}
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -159,7 +233,7 @@ export default function ActiveMissions() {
           </p>
           {contractMissions.length > 0 && (
             <p className="text-xs text-gray-600 mt-2">
-              Missions chargées depuis le smart contract • {contractMissions.length} mission(s) trouvée(s)
+              Missions chargées depuis le smart contract • {contractMissions.filter(mission => mission.status === '1').length} mission(s) ouverte(s)
             </p>
           )}
         </div>
