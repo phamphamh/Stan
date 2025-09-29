@@ -1,6 +1,6 @@
 # 🎶 Stan
 
-A project developed in **48 hours during the CHEESE hackathon**.  
+A project developed in **48 hours during the CHILIZ hackathon at the Parc des Princes**
 The goal: build a **blockchain for K-pop fans** that rewards their engagement (streams, album purchases, community actions) with **decentralized tokens**.  
 These tokens allow **super fans** to unlock **exclusive rewards** offered directly by the artists.
 
