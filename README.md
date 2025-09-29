@@ -1,34 +1,50 @@
-# Stan Project
+# 🎶 Stan
 
-## Description
-Stan is a project combining a Next.js frontend and Solidity smart contracts on the Chiliz blockchain. It includes features like missions, leaderboard, shop, etc.
+A project developed in **48 hours during the CHEESE hackathon**.  
+The goal: build a **blockchain for K-pop fans** that rewards their engagement (streams, album purchases, community actions) with **decentralized tokens**.  
+These tokens allow **super fans** to unlock **exclusive rewards** offered directly by the artists.
 
-## Project Structure
-- **chiliz_contract/**: Smart contracts (using Foundry).
-- **frontend/**: Next.js web application with React components, hooks, etc.
-- **script_mission.js**: Script for missions.
+---
 
-## Prerequisites
-- Node.js (v18+)
-- npm or pnpm
-- Foundry (for contracts)
-- Vercel account for deployment
+## 🚀 Features
 
-## Installation
-1. Clone the repo: `git clone <repo-url>`
-2. Install root dependencies: `npm install`
-3. For frontend: `cd frontend && npm install`
-4. For contracts: `cd chiliz_contract && forge install`
+- 📊 **Fan engagement tracking**: streams, purchases, community activities.
+- 💎 **Token rewards**: every action generates decentralized tokens.
+- 🎁 **Exclusive rewards**: tokens can be redeemed for unique artist experiences.
+- 🌐 **Next.js web app**: simple and fast fan interface.
+- ⛓ **Foundry smart contracts**: transparency and on-chain security.
 
-## Development
-- Frontend: `cd frontend && npm run dev`
-- Contract tests: `cd chiliz_contract && forge test`
+---
 
-## Deployment
-- Frontend on Vercel: Push to GitHub, Vercel deploys automatically.
-- Contracts: Use scripts in `chiliz_contract/script/`.
+## 🏗 Project Structure
 
-## Environment
-Configure `.env` in frontend with variables like NEXT_PUBLIC_RPC_URL, etc.
+- **`chiliz_contract/`**: smart contracts (built with [Foundry](https://book.getfoundry.sh/)).
+- **`frontend/`**: [Next.js](https://nextjs.org/) web application with React hooks and UI components.
+- **`script_mission.js`**: script for defining and executing fan missions.
 
-For more info, contact the development team.
+---
+
+## 📦 Prerequisites
+
+Make sure you have installed:
+
+- [Node.js](https://nodejs.org/) (v18+)
+- npm or [pnpm](https://pnpm.io/)
+- [Foundry](https://book.getfoundry.sh/getting-started/installation) for smart contracts
+- A [Vercel](https://vercel.com/) account for frontend deployment
+
+---
+
+## ⚡️ Installation
+
+```bash
+# Clone the repo
+git clone https://github.com/username/k-fanchain.git
+cd k-fanchain
+
+# Install frontend dependencies
+cd frontend
+pnpm install
+
+# Run the dev server
+pnpm dev
